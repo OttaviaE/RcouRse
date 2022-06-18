@@ -6,7 +6,6 @@ output:
   beamer_presentation: 
     theme: Singapore
     colortheme: rose
-    fonttheme: structuresmallcapsserif
     highlight: haddock
 header-includes:
     - \usepackage{graphicx} 
@@ -125,9 +124,7 @@ Just copy \& paste any error message or wanring in google or ask google "how to 
 
  Ask `R` to help you! Type `?` in your console followed by the name of the function:
 
-```{r eval = FALSE}
-?mean()
-```
+    ?mean()
 
 Will show you the help page of the `mean()` function
 
@@ -269,18 +266,18 @@ Different types of objects $\rightarrow$ types of vectors:
 `int`: refers to integer `r -3:3`
 
 ```{r}
-v_int = c(1, 2, 3, 4, 5)
+months = c(5, 6, 8, 10, 12, 16)
 ```
 
 ```{r echo = FALSE}
-v_int
+months
 ```
 
 
 `num`: refers to all numbers from $-\infty$ to $\infty$ `r rnorm(6)`
 
 ```{r}
-v_num = rnorm(6)
+weigth = seq(3, 11, by = 1.2) 
 ```
 
 ## `logi`
@@ -288,14 +285,18 @@ v_num = rnorm(6)
 Logical values can be `TRUE` (`T`) or `FALSE` (`F`)
 
 ```{r}
-v_logi = c(T, T, F, F, T)
+v_logi = c(TRUE, TRUE, FALSE, FALSE, TRUE)
 ```
 
 ```{r echo = FALSE}
 v_logi
 ```
 
+logical vectors are often obtained from a comparison:
 
+```{r}
+months > 30
+```
 ## `chr` and `factor`
 
 `chr`: characters `r c(letters[1:3], LETTERS[4:6])`
@@ -312,12 +313,57 @@ v_chr
 `factor`: use numbers or characters to identify the variable levels
 
 ```{r}
-v_fac = as.factor(c(rep(c("a", "b", "c"), each = 3)))
+ses = factor(c(rep(c("low", "medium", "high"), each = 3)))
 ```
 
 ```{r echo = FALSE}
-v_fac
+ses
 ```
+
+Change order of the levels: 
+
+```{r}
+ses1 = factor(ses, levels = c("medium", "high", "low")) 
+```
+```{r echo = FALSE}
+ses1
+```
+
+
+
+## Create vectors
+
+\small
+
+Concatenate elements with `c()`: 
+
+```{r eval = FALSE}
+vec = c(1, 2, 3, 4, 5)
+```
+
+Sequences: 
+
+```{r eval=FALSE}
+-5:5 # vector of 11 numbers from -5 to 5
+
+seq(-3, 3, by = 0.5) # sequence in steps of 0.5 from -3 to 3
+```
+Repeating elements: 
+
+```{r}
+rep(1:3, 4)
+```
+```{r}
+rep(c("condA", "condB"), each = 3)
+```
+
+```{r}
+rep(c("on", "off"), c(3, 2))
+```
+```{r}
+paste0("item", 1:4)
+```
+
 
 
 ## Don't mix them up \small unless you truly want to
@@ -361,6 +407,69 @@ The same operation can be applied to each element of the vector:
 (a - mean(a))^2 # squared deviation
 ```
 
+## Matrices and arrays
+
+Create a $3 \times 4$ matrix: 
+
+```{r}
+A = matrix(1:12, nrow=3, ncol = 4, byrow = TRUE)
+```
+
+
+Label and transpose: 
+
+```{r, tidy=TRUE}
+rownames(A) = c(paste("a", 1:3)) # colnames() 
+t(A)                             # transpose matrix
+```
+
+
+## Matrices and arrays
+
+Matrix can be created by concatening columns or rows: 
+
+```{r eval=FALSE}
+cbind(a1 = 1:4, a2 = 5:8, a3 = 9:12) # column bind
+rbind(a1 = 1:4, a2 = 5.8, a3 = 9:12) # row bind
+```
+
+##  Matrices and arrays
+
+Arrays have more than two dimensions: 
+
+
+```{r}
+array(c(A, 2*A), c(3, 4, 2)) # 3 x 4 x 2 array
+```
+Contingency table: `table()`, `xtabs()` 
+
+## Lists 
+
+Can store different objects (e.g., vectors, data frames, other lists): 
+
+```{r}
+my_list = list(w = weigth, m = months, s = ses1, a = A)
+```
+
+The components of the list can be extracted with `$` or `[[]]` and the name (or position) of the component: 
+
+Extract `months`:
+
+```{r}
+my_list[["m"]] # my_list$a
+```
+
+Extract `weight`: 
+
+```{r}
+my_list[[1]] # my_list$months or my_list[["a"]]
+```
+
+
+## The king of data structure: data frames
+
+Data frames are lists that consist of vectors and factors of equal
+length. The rows in a data frame refer to one unit: 
 
 
 
