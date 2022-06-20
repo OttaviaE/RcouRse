@@ -1,0 +1,25 @@
+\frametitle{Execersizes}
+\protect\hypertarget{execersizes}{}
+\begin{itemize}
+\item
+  Open a new \texttt{R} script
+\item
+  Create one vector for each type (\texttt{int}, \texttt{num},
+  \texttt{chr}, \texttt{logi}, \texttt{factor}) and assign each of them
+  to an object
+\item
+  Compute the mean of the \texttt{int} and \texttt{num} vectors
+\item
+  Standardize the values of the \texttt{int} and \texttt{num} vectors
+  and store them in two new objects:
+\end{itemize}
+
+\[ z = \frac{x_i - \bar{X}}{sd}\]
+
+\begin{itemize}
+\item
+  Create a new vector by combining together the \texttt{logi} and
+  \texttt{int} vectors
+\item
+  Add the \texttt{logi} vector to the \texttt{num} vector
+\end{itemize}

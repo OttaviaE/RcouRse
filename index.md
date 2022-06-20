@@ -15,8 +15,8 @@ Everyone can contribute with new packages, by signaling bugs in existing package
 
 This course aims at gving a brief yet comprehensive introduction to the use of `R` as a programming language. `R` can be used for developing web application through `RStudio` and the `shiny` package. Some examples of shiny apps can be found [here](https://shiny.rstudio.com/gallery/). 
 
-- IntRoduction: Using `R` for data analsyis and programming PDF
-- Shine bright like an open source app: Basics on how to program in `shiny` for developing interactive web applications Rmd
+- IntRoduction: Using `R` for data analysis and programming [PDF](intRo/intRo.pdf)
+- Shine bright like an open source app: Basics on how to program in `shiny` for developing interactive web applications [Rmd](shiny/shiny.Rmd)
 
 ## Further readings
 
