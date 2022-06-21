@@ -3,7 +3,7 @@ author: Ottavia M. Epifania
 title: RcouRse
 ---
 
-This is a basic course on `R` and `shiny` for the Qhelp seminar, whih will be held in Padova (ItLY) from July 9 to July 16, 2022. Further information on the Qhelp seminars and the Erasmus + program can be found [here](https://qhelp.eu/)
+This is a basic course on `R` and `shiny` for the Qhelp seminar, whih will be held in Padova (Italy) from July 9 to July 16, 2022. Further information on the Qhelp seminars and the Erasmus + program can be found [here](https://qhelp.eu/)
 
 ## `R`
 
