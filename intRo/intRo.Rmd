@@ -27,6 +27,8 @@ header-includes:
     - \AtBeginSection{\frame{\sectionpage}}
     - \setbeamercolor{section name}{fg=white}
     - \setbeamersize{text margin left=5mm,text margin right=5mm} 
+    # - \usepackage{fvextra}
+    # - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, 
@@ -174,7 +176,7 @@ It might be useful to save all the computations you have done:
 save.image("my-computations.RData")
 ```
  
-Then you can upload the enviroment back:
+Then you can upload the environment back:
 
 ```{r eval=FALSE}
 load("my-Computations.RData")
@@ -277,7 +279,11 @@ months
 `num`: refers to all numbers from $-\infty$ to $\infty$ `r rnorm(6)`
 
 ```{r}
-weigth = seq(3, 11, by = 1.2) 
+weight = seq(3, 11, by = 1.5) 
+```
+
+```{r echo = FALSE}
+weight
 ```
 
 ## `logi`
@@ -295,7 +301,7 @@ v_logi
 logical vectors are often obtained from a comparison:
 
 ```{r}
-months > 30
+months > 12
 ```
 ## `chr` and `factor`
 
@@ -313,7 +319,7 @@ v_chr
 `factor`: use numbers or characters to identify the variable levels
 
 ```{r}
-ses = factor(c(rep(c("low", "medium", "high"), each = 3)))
+ses = factor(c(rep(c("low", "medium", "high"), each = 2)))
 ```
 
 ```{r echo = FALSE}
@@ -335,24 +341,25 @@ ses1
 
 \small
 
-Concatenate elements with `c()`: 
-
-```{r eval = FALSE}
-vec = c(1, 2, 3, 4, 5)
-```
+Concatenate elements with `c()`: `vec = c(1, 2, 3, 4, 5)`
 
 Sequences: 
 
-```{r eval=FALSE}
+```{r}
 -5:5 # vector of 11 numbers from -5 to 5
 
 seq(-3, 3, by = 0.5) # sequence in steps of 0.5 from -3 to 3
 ```
+
 Repeating elements: 
 
 ```{r}
 rep(1:3, 4)
 ```
+
+## Create vectors II
+
+
 ```{r}
 rep(c("condA", "condB"), each = 3)
 ```
@@ -426,7 +433,7 @@ t(A)                             # transpose matrix
 
 ## Matrices and arrays
 
-Matrix can be created by concatening columns or rows: 
+Matrix can be created by concatenating columns or rows: 
 
 ```{r eval=FALSE}
 cbind(a1 = 1:4, a2 = 5:8, a3 = 9:12) # column bind
@@ -435,20 +442,75 @@ rbind(a1 = 1:4, a2 = 5.8, a3 = 9:12) # row bind
 
 ##  Matrices and arrays
 
-Arrays have more than two dimensions: 
+\small 
+
+    array(data, c(nrow, ncol, ntab))
 
 
 ```{r}
-array(c(A, 2*A), c(3, 4, 2)) # 3 x 4 x 2 array
+my_array = array(1:30, c(2, 5, 3)) # 2 x 5 x 3 array
 ```
-Contingency table: `table()`, `xtabs()` 
+
+\footnotesize
+
+```{r echo=FALSE}
+my_array
+```
+
+
+## Work with vectors, atrices, arrays
+
+Index elements in vectors `vector_name[position]`
+
+```{r eval=FALSE}
+weight[2] # second element in vector weight
+weight[6] = 15.2 # replace sixth element of weight
+weight[seq(1, 6, by = 2)] # elements 1, 3, 5 
+weight[2:6] # elements 2 to 6
+weight[-2] # without elemt 2
+```
+Logic applies as well: 
+
+```{r  eval=FALSE}
+weight[weight > 7] # values greater than 7
+weight[weight >= 4.5 & weight < 8] # values between 4.5 and 8
+```
+
+
+
+## Work with vectors, atrices, arrays II
+
+Access elements in matrices: `matrix_name[row, column]`
+
+```{r eval = FALSE}
+A[2, 3] # cell in row 2 column 3
+
+A[2, ] # second row
+
+A[, 3] # third column
+```
+## Work with vectors, atrices, arrays III
+
+Access elements in arrays `array_name[row, col, tab]`
+
+```{r eval = FALSE}
+my_array[2, 1, 3] # cell in 2nd row 1st col of 3rd tab
+```
+
+```{r eval = FALSE}
+my_array[, , 3] # 3rd tab
+
+my_array[1, ,2] # 1st row in tab 2
+```
+
+
 
 ## Lists 
 
 Can store different objects (e.g., vectors, data frames, other lists): 
 
 ```{r}
-my_list = list(w = weigth, m = months, s = ses1, a = A)
+my_list = list(w = weight, m = months, s = ses1, a = A)
 ```
 
 The components of the list can be extracted with `$` or `[[]]` and the name (or position) of the component: 
@@ -470,6 +532,168 @@ my_list[[1]] # my_list$months or my_list[["a"]]
 
 Data frames are lists that consist of vectors and factors of equal
 length. The rows in a data frame refer to one unit: 
+
+
+```{r}
+id = paste0("sbj", 1:6)
+babies = data.frame(id, months, weight)
+```
+
+```{r echo=TRUE}
+babies
+```
+
+
+## Working with data frames
+
+Index elements in a data frame: 
+
+```{r eval = FALSE}
+babies$months # column months of babies
+
+babies$months[2] # second element of column months
+
+babies[, "id"] # column id
+
+babies[2, ] # second row of babies (obs on baby 2)
+```
+
+Logic applies: 
+
+```{r eval = FALSE}
+babies[babies$weigth > 7, ] # all obs above 7 kg
+babies[babies$id %in% c("sbj1", "sbj6"), ] # obs of sbj1 and sbj7
+```
+
+
+
+## Working with data frames II
+
+```{r}
+dim(babies) # show the dimensions of the data frame
+
+names(babies) # variable names (= colnames(babies))
+
+```
+
+
+```{r eval=FALSE}
+View(babies) # open data viewer
+
+plot(babies) # pariwise plot
+```
+
+\vfill
+
+\footnotesize You can use these commands also on other `R` objects
+
+## Working with data frames III
+
+
+```{r}
+str(babies) # show details on babies
+```
+
+```{r}
+summary(babies) # descriptive statistics 
+```
+
+
+\vfill
+
+\footnotesize You can use these commands also on other `R` objects
+
+## Sorting
+
+\small
+
+`order()`: 
+
+```{r}
+babies[order(babies$weight), ] # sort by increasing weight
+```
+```{r eval = FALSE}
+babies[order(babies$weight,    # sort by decreasing weight
+             decreasing = T), ] 
+```
+
+Multiple arguments in `order`: 
+
+```{r eval = FALSE}
+babies[order(babies$weight, babies$months, 
+             decreasing = TRUE), ]         
+```
+
+## Aggregating
+
+Aggregate a response variable according to grouping variable(s) (e.g., averaging per experimental conditions): 
+
+```{r eval = FALSE}
+# Single response variable, single grouping variable
+aggregate(y ~ x, data = data, FUN, ...)
+
+# Multiple response variables, multiple grouping variables
+aggregate(cbind(y1, y2) ~ x1 + x2, data = data, FUN, ...)
+```
+
+## Aggregating: Example
+
+\small
+
+```{r}
+head(ToothGrowth) # Vitamin C and tooth growth (Guinea Pigs)
+```
+
+Aggregate across supplement and dose of Vitamin C:
+
+```{r}
+aggregate(len ~ supp + dose, data = ToothGrowth, mean)
+```
+## Reshaping: Long to wide
+
+Data can be organized in wide format (i.e., one line for each statistical unit) or in long format (i.e., one line for each observation). 
+
+```{r out.lines = 5}
+head(Indometh) # Long format
+```
+
+
+## Long to wide
+
+
+```{r tidy=TRUE, tidy.opts=list(width.cutoff=60), out.lines=3}
+# From long to wide
+df.w <- reshape(Indometh, v.names="conc", 
+                timevar="time",
+                idvar="Subject", direction="wide")
+```
+
+```{r out.width="70%", out.lines=8, echo = FALSE}
+df.w
+```
+
+
+## Reshaping: Wide to long
+
+\small
+
+```{r tidy=TRUE, tidy.opts=list(width.cutoff=60)}
+# From wide to long
+df.l <- reshape(df.w, varying=list(2:12), 
+                v.names="conc", 
+                idvar="Subject", direction="long",
+times=c(.25, .5, .75, 1, 1.25, 2, 3, 4, 5, 6, 8))
+```
+
+```{r echo=FALSE, out.lines=4}
+df.l
+```
+
+```{r out.lines=4}
+# reorder by subject
+df.l[order(df.l$Subject), ]
+
+```
 
 
 
