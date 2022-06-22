@@ -22,7 +22,7 @@ This course aims at giving a brief yet comprehensive introduction to the use of 
 
 - [Shiny Gallery](https://shiny.rstudio.com/gallery/): You can find a gallery of different apps developed and deployed with `shiny`
 - [Shiny widgets](https://shiny.rstudio.com/gallery/widget-gallery.html): All the possible inputs you can use in `shiny`
-- [Shiny server](https://rstudio.com/products/shiny/shiny-server/): How to deploy your `shiny` app (but not necessarily in an easy way, sorry)
+- [Shiny server](https://rstudio.com/products/shiny/shiny-server/): How to deploy your `shiny` app (but you have to pay)
 - [Shiny server for dummies](https://deanattali.com/2015/05/09/setup-rstudio-shiny-server-digital-ocean/#shiny-git) How to deploy your `shiny` app **for free** (but not necessarily in an easy way, sorry)
 - [shinjs](https://deanattali.com/shinyjs/example): Animate your `shiny` app with some Javascript without knowing **anything** about Java
 - [CSS for dummies](https://www.w3schools.com/css/): Make your app looks better with css
