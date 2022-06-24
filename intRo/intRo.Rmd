@@ -1,11 +1,12 @@
 ---
-title: "An intRoduction to R"
-date: ''
+title: "An int`R`oduction to `R`"
+date: 'ottavia.epifania@unipd.it'
+author: "Ottavia M. Epifania"
 institute: "Univerisity of Padova (IT)"
 output: 
   beamer_presentation: 
-    theme: Singapore
-    colortheme: rose
+    theme: Metropolis
+    colortheme: default
     highlight: haddock
 header-includes:
     - \usepackage{graphicx} 
@@ -27,8 +28,14 @@ header-includes:
     - \AtBeginSection{\frame{\sectionpage}}
     - \setbeamercolor{section name}{fg=white}
     - \setbeamersize{text margin left=5mm,text margin right=5mm} 
-    # - \usepackage{fvextra}
-    # - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+    - \setbeamertemplate{navigation symbols}[horizontal] 
+    - \AtBeginSection[]
+          {
+             \begin{frame}
+             \frametitle{Table of Contents}
+             \tableofcontents[currentsection]
+              \end{frame}
+            }
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, 
@@ -55,6 +62,10 @@ hook_output(x, options)
 set.seed(9999)
 library(knitr)
 ```
+
+## Table of contents
+
+\tableofcontents
 
 # Who aRe you?
 
@@ -453,7 +464,7 @@ my_array = array(1:30, c(2, 5, 3)) # 2 x 5 x 3 array
 
 \footnotesize
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.lines=11}
 my_array
 ```
 
@@ -528,7 +539,9 @@ my_list[[1]] # my_list$months or my_list[["a"]]
 ```
 
 
-## The king of data structure: data frames
+# The king of data structure: data frames
+
+##
 
 Data frames are lists that consist of vectors and factors of equal
 length. The rows in a data frame refer to one unit: 
@@ -695,7 +708,195 @@ df.l[order(df.l$Subject), ]
 
 ```
 
+# Data input and output
 
+## Reading tabular txt files: 
+
+`ASCII` text files in tabular or spread sheet form (one line per
+observation, one column per variable) are read using
+`read.table()`
+
+```{r eval = FALSE}
+data = read.table("C:/RcouRse/file.txt", header = TRUE)
+```
+
+`data` is a data frame where the original numerical varibales are converted in numeric vectors and character variables are converted in factors. 
+
+Arguments: 
+
+- `header`: variable names in the first line? `TRUE/FALSE`
+- `sep`: which separator between the columns (e.g., comma, `\t`)
+- `dec`: `1.2` or `1,2`?
+
+
+## Reading other files
+
+```{r eval = F, tidy=FALSE}
+data = read.csv("C:/RcouRse/file.csv", 
+                header = TRUE, sep = ";", 
+                dec = ",")
+```
+
+From SPSS (file `sav`):
+
+```{r eval=FALSE}
+install.packages("foreign")
+library(foreign)
+data = read.spss("data.sav", to.data.frame = TRUE)
+```
+
+
+## Combine data frames
+
+If they have the same number of columns/rows
+
+```{r eval = FALSE}
+all_data = rbind(data, data1, data2) # same columns
+all_data = cbind(data, data1, data2) # same rows
+```
+
+If they have different rows/columns but they share at least one characteristic (e.g., `ID`): 
+
+```{r eval=FALSE}
+all_data = merge(data1, data2, 
+                 by = "ID")
+```
+
+
+If there are different IDs in the two datasets $\rightarrow$ added in new rows
+
+`all_data` contains all columns in `data1` and `data2`. The columns of the IDs in data1 but not in data2 (and vice versa) will be filled with `NA`s accordingly
+
+## Export data
+
+Writing text (or csv) file: 
+
+```{r eval=FALSE}
+write.table(data, # what you eant to write 
+            file = "mydata.txt", # its name + extension
+            header = TRUE, # first row with col names?
+            sep = "\t",  # column separtor 
+            ....) # other arguments
+```
+
+`R` environment (again): 
+
+```{r eval=FALSE}
+save(dat, file = "exp1_data.rda") # save something specific 
+save(file = "the_earth.rda")      # save the environment
+load("the_earth.rda") # load it back
+```
+
+# Programming 
+
+## 
+
+Be ready to make mistakes (a lot of mistakes)
+
+Coding is ~~hard~~ art
+
+Think like a computer would think $\rightarrow$ not one gigantic problem but a series of small problems leading to a big solution
+
+Remember: You're not alone `stackoverflow` (or Google in general) is your best friend
+
+
+## `ifelse()`
+
+Conditional execution: 
+
+Easy: `ifelse(test, if true, if false)` 
+
+```{r eval=TRUE}
+ifelse(weight > 7, "big boy", "small boy")
+```
+\begin{exampleblock}{Pros}
+
+- Super easy to use
+- Can embed multiple `ifelse()` cycles
+\end{exampleblock}
+
+
+\begin{alertblock}{Cons}
+
+- It works fine until you have simple tests
+\end{alertblock}
+
+## `if () {} else {}`
+
+If you have only one condition: 
+
+```{r eval = FALSE}
+if (test_1) {
+  command_1
+} else {
+  command_2
+}
+```
+
+## `if () {} else {}`
+
+Multiple conditions: 
+
+```{r eval = FALSE}
+if (test_1) {
+  command_1
+} else if (test_2) {
+  command_2
+} else {
+  command_3
+}
+```
+
+`test_1` (and `test_2`, if you have it) **must** evaluate in either `TRUE` or `FALSE`
+
+```{r eval = FALSE}
+if(!is.na(x)) y <- x^2 else stop("x is missing")
+```
+
+
+## Loops 
+
+`for()` and `while()`
+
+Repeat a command over and over again: 
+
+```{r eval = FALSE}
+# Don't do this at home
+x <- rnorm(10)      
+y <- numeric(10)   # create an empty container 
+for(i in seq_along(x)) {
+y[i] <- x[i] - mean(x)
+}
+```
+
+The best solution would have been: 
+
+```{r eval=FALSE}
+y = x - mean(x)
+```
+
+## Avoiding loops
+
+Don't loop, `apply()`! 
+
+```{r eval = F}
+X <- matrix(rnorm(20),
+            nrow = 5, ncol = 4)
+apply(X, 2, max) # maximum for each column
+```
+
+
+<!-- \begin{column}{.50\linewidth} -->
+<!-- ```{r eval =F} -->
+<!-- y = NULL -->
+<!-- for (i in 1:ncol(X)) { -->
+<!--   y[i] = max(X[, i]) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- \end{column} -->
+
+<!-- \end{columns} -->
 
 ## Execersizes
 
