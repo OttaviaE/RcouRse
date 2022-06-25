@@ -6,13 +6,14 @@ institute: "Univerisity of Padova (IT)"
 output: 
   beamer_presentation: 
     theme: Metropolis
-    colortheme: default
+    colortheme: beaver
+    fonttheme: serif
     highlight: haddock
 header-includes:
     - \usepackage{graphicx} 
     - \usepackage{setspace}
     - \usepackage{tabularx}
-    - \usepackage[italian]{babel}
+    - \usepackage[english]{babel}
     - \usepackage{tikzsymbols}
     - \usepackage{subcaption}
     - \usepackage{tikz}
@@ -22,31 +23,35 @@ header-includes:
     - \usepackage{booktabs}
     - \newcommand\Factor{1.2}
     - \setbeamerfont{subtitle}{size=\large, series=\bfseries}
-    - \definecolor{template}{RGB}{54, 114, 89}
+    - \definecolor{template}{RGB}{181, 18, 27}
     - \setbeamercolor{frametitle}{bg=white}
     - \setbeamertemplate{frametitle}[default][center]
     - \AtBeginSection{\frame{\sectionpage}}
     - \setbeamercolor{section name}{fg=white}
+    - \setbeamercolor{title}{fg=template}
+    - \setbeamercolor{section title}{fg=template}
+    - \setbeamercolor{frame subtitle}{fg=template}
     - \setbeamersize{text margin left=5mm,text margin right=5mm} 
-    - \setbeamertemplate{navigation symbols}[horizontal] 
+#    - \setbeamertemplate{navigation symbols}[horizontal] 
     - \AtBeginSection[]
           {
              \begin{frame}
              \frametitle{Table of Contents}
              \tableofcontents[currentsection]
               \end{frame}
-            }
+            }  
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, 
                       eval = TRUE, 
                       message = FALSE, 
                       comment="", 
-                      tidy=TRUE, 
+                      tidy=FALSE, 
                       warning = FALSE, 
                       fig.align = "center", 
-                      out.width = "50%")
-
+                      out.width = "70%")
+library(ggplot2)
+library(gridExtra)
 hook_output <- knitr::knit_hooks$get("output")
 knitr::knit_hooks$set(output = function(x, options) {
 if (!is.null(n <- options$out.lines)) {
@@ -63,9 +68,19 @@ set.seed(9999)
 library(knitr)
 ```
 
+
+
 ## Table of contents
 
 \tableofcontents
+
+## Course material 
+
+```{r out.width="60%", fig.align='center', echo=FALSE}
+knitr::include_graphics("img/qr-code.png")
+```
+
+
 
 # Who aRe you?
 
@@ -879,38 +894,580 @@ y = x - mean(x)
 
 Don't loop, `apply()`! 
 
-```{r eval = F}
+`apply()`
+
+
+```{r eval = F, tidy=FALSE}
 X <- matrix(rnorm(20),
             nrow = 5, ncol = 4)
 apply(X, 2, max) # maximum for each column
 ```
 
+\pause
 
-<!-- \begin{column}{.50\linewidth} -->
-<!-- ```{r eval =F} -->
-<!-- y = NULL -->
-<!-- for (i in 1:ncol(X)) { -->
-<!--   y[i] = max(X[, i]) -->
-<!-- } -->
-<!-- ``` -->
+`for()`
 
-<!-- \end{column} -->
+```{r eval =F}
+y = NULL
+for (i in 1:ncol(X)) {
+  y[i] = max(X[, i])
+}
+```
 
-<!-- \end{columns} -->
 
-## Execersizes
 
-- Open a new `R` script
 
-- Create one vector for each type (`int`, `num`, `chr`, `logi`, `factor`) and assign each of them to an object
+## Avoiding loops 
 
-- Compute the mean of the  `int` and `num` vectors
+Group-wise calculations: `tapply()`
 
-- Standardize the values of the `int` and `num` vectors and store them in two new objects: 
+`tapply()` (`t` for table) may be used to do group-wise calculations
+on vectors. Frequently it is employed to calculate group-wise
+means.
 
-$$ z = \frac{x_i - \bar{X}}{sd}$$
+```{r}
+with(ToothGrowth, 
+     tapply(len, list(supp, dose), mean))
+```
+(You could have done it with `aggregate()`)
 
-- Create a new vector by combining together the `logi` and `int` vectors
 
-- Add the `logi` vector to the `num` vector
+## Writing functions 
+
+Compute Cohen's *d*: 
+
+```{r tidy = FALSE}
+dcohen = function(group1, group2) { # Arguments
+  mean_1 = mean(group1) ; mean_2 = mean(group2)
+  var_1 = var(group1) ; var_2 = mean(group2) # body
+  d = (mean_1 - mean_2)/sqrt(((var_1 + var_2)/2) )
+  return(d) # results
+}
+```
+
+Use it: 
+
+```{r eval = FALSE}
+dcohen(data$placebo, data$drug)
+```
+
+## Named arguments
+
+Take this function: 
+
+```{r eval = F, tidy=FALSE}
+fun1 <- function(data, data.frame, graph, limit) { ... }
+
+```
+
+It can be called as: 
+
+
+```{r eval =FALSE, tidy=FALSE}
+fun1(d, df, TRUE, 20)
+fun1(d, df, graph=TRUE, limit=20)
+fun1(data=d, limit=20, graph=TRUE, data.frame=df)
+```
+
+Positional matching and keyword
+matching (as in built-in functions)
+
+## Defaults 
+
+Arguments can be given default values $\rightarrow$ the arguments can be omitted!
+
+```{r eval=FALSE}
+fun1 <- function(data, data.frame, graph=TRUE,
+                 limit=20) { ... }
+```
+
+
+It can be called as
+
+```{r eval=F}
+ans <- fun1(d, df)
+```
+
+which is now equivalent to the three cases above, but: 
+
+```{r eval=F}
+ans <- fun1(d, df, limit=10)
+```
+
+which changes one of the defaults.
+
+## Methods and classes
+
+The return value of a function may have a specified `class` $\rightarrow$ determines how it will be treated by other functions.
+
+For example, many classes have tailored `print` methods.
+
+```{r tidy=F, out.lines=7}
+methods(print)
+```
+
+## Define a print method!
+
+...as another function: 
+
+```{r}
+print.cohen <- function(obj){
+  cat("\nMy Cohen's d\n\n")
+  cat("Effect size: ", obj$d, "\n")
+  invisible(obj) # return the object
+}
+```
+
+We have to change our `dcohen` function a bit: 
+
+```{r eval = FALSE}
+dcohen = function(group1, group2) { # Arguments
+  ...
+  dvalue = list(d = d)
+  class(dvalue) = "cohend"
+  return(dvalue) # results
+}
+```
+
+## Debugging 
+
+Use the `traceback()` function: 
+
+```{r eval=FALSE}
+foo <- function(x) { print(1); bar(2) }
+bar <- function(x) { x + a.variable.which.does.not.exist }
+```
+
+Call `foo()` and... 
+
+```{r eval = FALSE}
+foo() # 
+[1] 1
+Error: object ’a.variable.which.does.not.exist’ not found
+```
+
+
+##
+
+Use `traceback()`:
+
+```{r eval=FALSE}
+traceback() # find out where the error occurred
+2: bar(2)
+1: foo()
+```
+
+Note: `traceback()` appears as default
+
+## String processing
+
+
+```{r eval=FALSE}
+substr(x, start, stop)        # extract substring
+grep(pattern, x)              # match pattern
+gsub(pattern, replacement, x) # replace pattern
+```
+
+`pattern` $=$ regular expression (`?regex`):
+
+```{r eval= FALSE}
+foo # match pattern foo
+.* # match arbitrary character zero or more times
+[a-z0-9] # match alphanumeric character
+```
+
+## Example
+
+Match string that starts with `a` or `b` and replace it by its starting letter.
+
+
+```{r}
+gsub("(^[ab]).*", "\\1", c("aaa", "bbc", "cba"))
+```
+# Graphics
+
+##
+
+- Traditional graphics
+- Grid graphics \& `ggplot2`
+
+For both: 
+
+- High level functions $\rightarrow$ actually produce the plot
+- Low level functions $\rightarrow$ make it looks better =)
+
+## Export graphics file
+
+
+```{r eval = F}
+postscript()  # vector graphics
+pdf()
+
+png()          # bitmap graphics
+tiff()
+jpeg()
+bmp()
+```
+
+
+Remember to run off the graphic device once you've saved the graph:
+
+```{r eval=FALSE}
+dev.off()
+```
+
+(You can do it also manually)
+
+## Traditional graphics I
+
+High level functions
+
+```{r eval = FALSE}
+plot()      # scatter plot, specialized plot methods
+boxplot()
+hist()      # histogram
+qqnorm()    # quantile-quantile plot
+barplot()
+pie()       # pie chart
+pairs()     # scatter plot matrix
+persp()     # 3d plot
+contour()   # contour plot
+coplot()    # conditional plot
+interaction.plot()
+```
+
+
+`demo(graphics)` for a guided tour of base graphics!
+
+## Traditional graphics II
+
+Low level functions
+
+```{r eval = FALSE}
+points()       # add points
+lines()        # add lines
+rect()
+polygon()
+abline()       # add line with intercept a, slope b
+arrows()
+text()         # add text in plotting region
+mtext()        # add text in margins region
+axis()         # customize axes
+box()          # box around plot
+legend()
+```
+
+## Plot layout
+
+Each plot is composed of two regions: 
+
+- The plotting regions (contains the actual plot)
+- The margins region (contain axes and labels)
+
+A scatter plot: 
+
+```{r eval = FALSE}
+x <- runif(50, 0, 2) # 50 uniform random numbers
+y <- runif(50, 0, 2)
+plot(x, y, main="Title", 
+     sub="Subtitle", xlab="x-label",
+     ylab="y-label") # produce plotting window
+```
+
+Now add some text: 
+
+
+
+```{r eval = FALSE}
+text(0.6, 0.6, "Text at (0.6, 0.6)")
+abline(h=.6, v=.6, lty=2) # horizont. and vertic. 
+                          # lines
+```
+
+## Margins region 
+
+\small
+
+```{r eval=TRUE, echo=FALSE, out.width="100%"}
+x <- runif(50, 0, 2) # 50 uniform random numbers
+y <- runif(50, 0, 2)
+plot(x, y, main="Title", 
+     sub="Subtitle", xlab="x-label",
+     ylab="y-label", cex.lab=1.5) # produce plotting window
+text(0.6, 0.6, "Text at (0.6, 0.6)")
+abline(h=.6, v=.6, lty=2) # horiz. and vert. lines
+
+for(side in 1:4) mtext(-1:4, side=side, at=.7, line=-1:4)
+mtext(paste("Side", 1:4), side=1:4, line=-1, font=2)
+```
+## Rome wasn't built in a day 
+### and neither your graph
+
+Display the interaction between the two factors of a two-factorial experiment: 
+
+```{r eval=T}
+dat <- read.table(header=TRUE, text="
+A B rt
+a1 b1 825
+a1 b2 792
+a1 b3 840
+a2 b1 997
+a2 b2 902
+a2 b3 786
+")
+```
+
+Force `A` and `B` to be `factor`:
+
+```{r eval =TRUE}
+dat[,1:2] = lapply(dat[,1:2], as.factor)
+```
+
+## First: The plot
+\small
+```{r eval = TRUE, out.width="80%"}
+plot(rt ~ as.numeric(B), dat, type="n", axes=FALSE,
+     xlim=c(.8, 3.2), ylim=c(750, 1000),
+     xlab="Difficulty", ylab="Mean reaction time (ms)")
+```
+
+This will not result in anything! Well, it will just produce the container of the plot
+
+## Populate the content
+
+Plot the data points separately for each level of factor `A`.
+
+```{r eval=FALSE}
+points(rt ~ as.numeric(B), dat[dat$A=="a1",], 
+       type="b", pch=16)
+points(rt ~ as.numeric(B), dat[dat$A=="a2",], 
+       type="b", pch=4)
+
+```
+
+Add axes and a legend.
+
+```{r eval=FALSE}
+axis(side=1, at=1:3, expression(B[1], B[2], B[3]))
+axis(side=2) 
+legend(2.5, 975, expression(A[1], A[2]), pch=c(16, 4),
+       bty="n", title="Task")
+```
+
+
+## Final result
+
+::: columns
+
+:::: column
+```{r echo=FALSE, out.width="100%"}
+plot(rt ~ as.numeric(B), dat, type="n", axes=FALSE,
+     xlim=c(.8, 3.2), ylim=c(750, 1000),
+     xlab="Difficulty", ylab="Mean reaction time (ms)", 
+     cex.lab=1.5)
+points(rt ~ as.numeric(B), dat[dat$A=="a1",], 
+       type="b", pch=16)
+points(rt ~ as.numeric(B), dat[dat$A=="a2",], 
+       type="b", pch=4)
+axis(side=1, at=1:3, expression(B[1], B[2], B[3]))
+axis(side=2) 
+legend(2.5, 975, expression(A[1], A[2]), pch=c(16, 4),
+       bty="n", title="Task")
+
+```
+
+::::
+
+:::: column
+- Error bars may be added
+using the `arrows()`
+function.
+
+- Via `par()` many graphical
+parameters may be set
+(see `?par`), for example
+`par(mgp=c(2, .7, 0))`
+reduces the distance
+between labels and axes
+::::
+
+:::
+
+
+## Graphical parameters I
+
+```{r eval=FALSE}
+adj # justification of text
+bty # box type for legend
+cex # size of text or data symbols (multiplier)
+col # color, see colors()
+las # rotation of text in margins
+lty # line type (solid, dashed, dotted, ...)
+lwd # line width
+mpg # placement of axis ticks and tick labels
+pch # data symbol type
+tck # length of axis ticks
+type # type of plot (points, lines, both, none)
+```
+
+## Graphical parameters II
+
+
+`par()`
+
+```{r eval =FALSE}
+
+mai # size of figure margins (inches)
+mar # size of figure margins (lines of text)
+mfrow # number of sub-figures on a page:
+      # par(mfrow=c(1, 2)) creates two sub-figures
+oma # size of outer margins (lines of text)
+omi # size of outer margins (inches)
+pty # aspect ratio of plot region (square, maximal)
+```
+
+
+
+## `ggplot2` 
+
+\small
+
+`ggplot2` (Grammar of Graphics plot, Wickman, 2016) is one of the best packages for plotting raw data and results: 
+
+```{r eval=FALSE}
+install.packages("ggplot2") ; library(ggplot2)
+```
+
+The code for the previous plot: 
+
+```{r}
+ggplot(dat, aes(x = B, y = rt, group = A)) +  
+  geom_point(pch=dat$A, size = 5) + 
+  geom_line(aes(linetype=A), size=1)  + theme_classic() +
+  ylab("RT") +  scale_linetype_manual("Task", values =c(3,4),
+                                labels = c("A1", "A2")) +
+  scale_x_discrete(labels = c("B1", "B2", "B3")) +
+  theme(legend.position="top", 
+        panel.background =  element_rect(fill = "#FAFAFA", colour = "#FAFAFA"), 
+        plot.background = element_rect(fill = "#FAFAFA"), 
+        legend.key = element_rect(fill = "#FAFAFA"))
+```
+
+
+
+
+## Raw data
+
+```{r out.width="50%"}
+ggplot(rock, 
+       aes(y=peri,x=shape, color =shape, 
+           size = peri)) + geom_point() +
+  theme_bw() + theme(legend.position = "none")
+```
+
+
+## Linear model 
+
+```{r, message=FALSE, warning=FALSE, out.width="50%"}
+ggplot(rock, 
+       aes(y=peri,x=shape, color =shape, 
+           size = peri)) + geom_point() +
+  theme_bw() + theme(legend.position = "none") + 
+  geom_smooth(method="lm")
+
+```
+
+## Multi Panel 
+
+```{r echo = FALSE, out.width="80%"}
+states = data.frame(state.x77, state.name = state.name,
+state.region = state.region)
+
+ggplot(states, 
+       aes(x = Population, y = Murder, 
+           size = Illiteracy)) + geom_point() +
+  facet_wrap(~state.region) + theme_bw() 
+```
+## Multi panel code 
+
+```{r eval=FALSE}
+states = data.frame(state.x77, state.name = state.name,
+state.region = state.region)
+
+ggplot(states, 
+       aes(x = Population, y = Murder, 
+           size = Illiteracy)) + geom_point() +
+  facet_wrap(~state.region) + theme_bw() 
+```
+
+
+## Different plots in the same panel
+
+\small 
+
+use `grid.arrange()` function from the `gridExtra` package: 
+
+```{r eval = FALSE}
+install.packages("grideExtra") 
+library(gridExtra)
+```
+
+
+```{r eval = FALSE}
+murder_raw = ggplot(states,  # raw data
+               aes(x = Illiteracy, y = Murder)) +
+           .....
+
+murder_lm = ggplot(states,  # lm 
+               aes(x = Illiteracy, y = Murder)) +
+           .....
+            
+```
+
+Combine the plots together: 
+
+```{r eval = FALSE}
+grid.arrange(murder_raw, murder_lm, 
+             nrow=1) # plots forced to be on same raw
+```
+
+ 
+
+## Combine the plots together 
+\small
+
+```{r echo = FALSE}
+
+murder_raw = ggplot(states,  # raw data
+               aes(x = Illiteracy, y = Murder)) + geom_point(size =3, pch=3) + theme_classic() + theme(legend.position = "none")
+
+murder_lm = ggplot(states,  # raw data
+               aes(x = Illiteracy, y = Murder)) + geom_point(size =3, pch=3) + theme_classic() + 
+  geom_smooth(method="lm", color="red", aes(fill="red")) + theme(legend.position = "none")
+```
+
+
+```{r echo = FALSE}
+grid.arrange(murder_raw, murder_lm, 
+             nrow=1)
+```
+
+
+
+
+<!-- ## Execersizes -->
+
+<!-- - Open a new `R` script -->
+
+<!-- - Create one vector for each type (`int`, `num`, `chr`, `logi`, `factor`) and assign each of them to an object -->
+
+<!-- - Compute the mean of the  `int` and `num` vectors -->
+
+<!-- - Standardize the values of the `int` and `num` vectors and store them in two new objects:  -->
+
+<!-- $$ z = \frac{x_i - \bar{X}}{sd}$$ -->
+
+<!-- - Create a new vector by combining together the `logi` and `int` vectors -->
+
+<!-- - Add the `logi` vector to the `num` vector -->
 
