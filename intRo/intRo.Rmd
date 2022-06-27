@@ -1,6 +1,6 @@
 ---
 title: "An int`R`oduction to `R`"
-date: 'ottavia.epifania@unipd.it'
+date: 'Erasmus+ QHelp seminar, Padova, July 2022'
 author: "Ottavia M. Epifania"
 institute: "Univerisity of Padova (IT)"
 output: 
@@ -80,6 +80,7 @@ library(knitr)
 knitr::include_graphics("img/qr-code.png")
 ```
 
+NB: This material is based on the lessons by Dr. Florian Wickelmaier
 
 
 # Who aRe you?
@@ -92,7 +93,7 @@ knitr::include_graphics("img/qr-code.png")
 
 - `R` runs on Windows, MacOs, Unix
 
-## CalculatoR
+## Calculato`R`
 
 ```{r eval = FALSE} 
 3 + 2   # plus
@@ -107,7 +108,7 @@ exp(3)  # exponential
 Use brackets as you would do in a normal equation:
 
 ```{r eval = FALSE}
-(3 * 2)/ sqrt(25 + 4) 
+(3 * 2)/ sqrt(25 + 4) # Lokk at me!
 ```
 
 `R` ignores everything after # (it's a comment)
@@ -118,9 +119,9 @@ The results of the operations can be "stored" into objects with specific names d
 
 To assign a value to an object, there are two operators: 
 
-1. `=` `x = exp(2^2)`
+1. `x = exp(2^2)`
 
-2. `<-` `X <- log(2^2)`
+2. `X <- log(2^2)`
 
 The elements on the right are assigned to the object on the left 
 
@@ -135,7 +136,7 @@ knitr::include_graphics("img/meme.jpg")
 Valid variable names are letters, numbers, dots, underscores (e. g.,
 `variable_name`)
 
-Variables names cannot start with numbers
+Variable names cannot start with numbers
 
 Again, `R` is case sensitive
 
@@ -148,7 +149,7 @@ Again, `R` is case sensitive
 
  `R` is open source and it used world wide $\rightarrow$ there's a huge community ready to help you
 
-Just copy \& paste any error message or wanring in google or ask google "how to something in r"
+Just copy \& paste any error message or warning in Google or ask Google "how to **[something]** in r"
 
  Ask `R` to help you! Type `?` in your console followed by the name of the function:
 
@@ -162,21 +163,21 @@ Will show you the help page of the `mean()` function
 
 `R` projects are the best way to organize your files (and your workflow)
 
-It allows you to have all your files in a folder organized in sub folders 
+They allow you to have all your files in a folder organized in sub folders 
 
 You don't have to worry about the wording directories because it's all there!
 
-By creating a nw project, you can also initialize a shiny app 
+By creating a new project, you can also initialize a Shiny app 
 
 ## Create a new `R` project
 
 File $\rightarrow$ New project and choose what is best for you (unless you have already initialized a directory for your project, select a new directory): 
 
-- `R` poject "basic"
+- `R` project "basic"
 
 - `R` package
 
-- `Shiny`
+- `Shiny` project
 
 and so much more
 
@@ -212,7 +213,7 @@ load("my-Computations.RData")
 
 The computations are slow and you need them to be always and easily accessible 
 
-The best practice wis to save the script and document it in an `RMarkdown` file 
+The best practice is to save the script and document it in an `RMarkdown` file $\rightarrow$ Reproducibilty!
 
 
 
@@ -220,7 +221,7 @@ The best practice wis to save the script and document it in an `RMarkdown` file
 
 ## 
 
-If you choose not to use the `R` projects (\small{what a bad, bad, bad idea}), you need to know your directories: 
+If you choose not to use the `R` projects (\small what a bad, bad, bad idea \normalsize), you need to know your directories: 
 
 ```{r eval=FALSE}
 getwd() # the working directory in which you are right now
@@ -259,7 +260,7 @@ Arguments can be passed
 
 - without name (in the defined order) 
 
-- with name (in arbitrary order) $\rightarrow$ keyword matching
+- with name (in arbitrary order) $\rightarrow$ *keyword matching*
 
     mean(x, trim = 0.3, na.rm = TRUE)
 
@@ -269,7 +270,7 @@ No arguments? No problems, just brackets:
     
 Want to see the code of a function? Just type its name in the console without brackets: 
 
-    mean
+    chisq.test
 
 ## Vectors
 
@@ -291,7 +292,7 @@ Different types of objects $\rightarrow$ types of vectors:
 
 ## `int` and `num`
 
-`int`: refers to integer `r -3:3`
+`int`: refers to integer: `r -3:3`
 
 ```{r}
 months = c(5, 6, 8, 10, 12, 16)
@@ -302,7 +303,7 @@ months
 ```
 
 
-`num`: refers to all numbers from $-\infty$ to $\infty$ `r rnorm(6)`
+`num`: refers to all numbers from $-\infty$ to $\infty$: `r rnorm(6)`
 
 ```{r}
 weight = seq(3, 11, by = 1.5) 
@@ -331,7 +332,7 @@ months > 12
 ```
 ## `chr` and `factor`
 
-`chr`: characters `r c(letters[1:3], LETTERS[4:6])`
+`chr`: characters: `r c(letters[1:3], LETTERS[4:6])`
 
 ```{r}
 v_chr = c(letters[1:3], LETTERS[4:6])
@@ -374,7 +375,7 @@ Sequences:
 ```{r}
 -5:5 # vector of 11 numbers from -5 to 5
 
-seq(-3, 3, by = 0.5) # sequence in steps of 0.5 from -3 to 3
+seq(-2.5, 2.5, by = 0.5) # sequence in steps of 0.5 from -2.5 to 2.5
 ```
 
 Repeating elements: 
@@ -479,34 +480,35 @@ my_array = array(1:30, c(2, 5, 3)) # 2 x 5 x 3 array
 
 \footnotesize
 
-```{r echo=FALSE, out.lines=11}
+```{r echo=FALSE, out.lines=14}
 my_array
 ```
 
 
-## Work with vectors, atrices, arrays
+## Work with vectors, matrices, arrays
 
-Index elements in vectors `vector_name[position]`
+Index elements in vectors: `vector_name[position]`
 
 ```{r eval=FALSE}
-weight[2] # second element in vector weight
+weight[2]        # second element in vector weight
 weight[6] = 15.2 # replace sixth element of weight
 weight[seq(1, 6, by = 2)] # elements 1, 3, 5 
-weight[2:6] # elements 2 to 6
-weight[-2] # without elemt 2
+weight[2:6]      # elements 2 to 6
+weight[-2]      # without element 2
 ```
 Logic applies as well: 
 
 ```{r  eval=FALSE}
 weight[weight > 7] # values greater than 7
-weight[weight >= 4.5 & weight < 8] # values between 4.5 and 8
+weight[weight >= 4.5 & weight < 8] # values between 4.5 
+                                   # and 8
 ```
 
 
 
-## Work with vectors, atrices, arrays II
+## Work with vectors, matrices, arrays II
 
-Access elements in matrices: `matrix_name[row, column]`
+Index elements in matrices: `matrix_name[row, column]`
 
 ```{r eval = FALSE}
 A[2, 3] # cell in row 2 column 3
@@ -515,9 +517,9 @@ A[2, ] # second row
 
 A[, 3] # third column
 ```
-## Work with vectors, atrices, arrays III
+## Work with vectors, matrices, arrays III
 
-Access elements in arrays `array_name[row, col, tab]`
+Index elements in arrays `array_name[row, col, tab]`
 
 ```{r eval = FALSE}
 my_array[2, 1, 3] # cell in 2nd row 1st col of 3rd tab
@@ -539,18 +541,18 @@ Can store different objects (e.g., vectors, data frames, other lists):
 my_list = list(w = weight, m = months, s = ses1, a = A)
 ```
 
-The components of the list can be extracted with `$` or `[[]]` and the name (or position) of the component: 
+The components of the list can be indexed with `$` or `[[]]` and the name (or position) of the component: 
 
 Extract `months`:
 
 ```{r}
-my_list[["m"]] # my_list$a
+my_list[["m"]] # my_list$m
 ```
 
 Extract `weight`: 
 
 ```{r}
-my_list[[1]] # my_list$months or my_list[["a"]]
+my_list[[1]] # my_list$weight or my_list[["w"]]
 ```
 
 
@@ -589,8 +591,9 @@ babies[2, ] # second row of babies (obs on baby 2)
 Logic applies: 
 
 ```{r eval = FALSE}
-babies[babies$weigth > 7, ] # all obs above 7 kg
-babies[babies$id %in% c("sbj1", "sbj6"), ] # obs of sbj1 and sbj7
+babies[babies$weight > 7, ] # all obs above 7 kg
+babies[babies$id %in% c("sbj1", "sbj6"), ] # obs of sbj1 
+                                           # and sbj7
 ```
 
 
@@ -627,9 +630,6 @@ summary(babies) # descriptive statistics
 ```
 
 
-\vfill
-
-\footnotesize You can use these commands also on other `R` objects
 
 ## Sorting
 
@@ -648,8 +648,7 @@ babies[order(babies$weight,    # sort by decreasing weight
 Multiple arguments in `order`: 
 
 ```{r eval = FALSE}
-babies[order(babies$weight, babies$months, 
-             decreasing = TRUE), ]         
+babies[order(babies$weight, babies$months, decreasing = TRUE), ]         
 ```
 
 ## Aggregating
@@ -668,11 +667,9 @@ aggregate(cbind(y1, y2) ~ x1 + x2, data = data, FUN, ...)
 
 \small
 
-```{r}
-head(ToothGrowth) # Vitamin C and tooth growth (Guinea Pigs)
+```{r out.lines=4}
+ToothGrowth # Vitamin C and tooth growth (Guinea Pigs)
 ```
-
-Aggregate across supplement and dose of Vitamin C:
 
 ```{r}
 aggregate(len ~ supp + dose, data = ToothGrowth, mean)
@@ -681,13 +678,14 @@ aggregate(len ~ supp + dose, data = ToothGrowth, mean)
 
 Data can be organized in wide format (i.e., one line for each statistical unit) or in long format (i.e., one line for each observation). 
 
-```{r out.lines = 5}
-head(Indometh) # Long format
+```{r out.lines = 7}
+Indometh # Long format
 ```
 
 
 ## Long to wide
 
+\small
 
 ```{r tidy=TRUE, tidy.opts=list(width.cutoff=60), out.lines=3}
 # From long to wide
@@ -718,8 +716,7 @@ df.l
 ```
 
 ```{r out.lines=4}
-# reorder by subject
-df.l[order(df.l$Subject), ]
+df.l[order(df.l$Subject), ] # reorder by subject
 
 ```
 
@@ -735,7 +732,7 @@ observation, one column per variable) are read using
 data = read.table("C:/RcouRse/file.txt", header = TRUE)
 ```
 
-`data` is a data frame where the original numerical varibales are converted in numeric vectors and character variables are converted in factors. 
+`data` is a data frame where the original numerical variables are converted in numeric vectors and character variables are converted in factors (not always). 
 
 Arguments: 
 
@@ -752,7 +749,7 @@ data = read.csv("C:/RcouRse/file.csv",
                 dec = ",")
 ```
 
-From SPSS (file `sav`):
+From SPSS (file `.sav`):
 
 ```{r eval=FALSE}
 install.packages("foreign")
@@ -780,17 +777,17 @@ all_data = merge(data1, data2,
 
 If there are different IDs in the two datasets $\rightarrow$ added in new rows
 
-`all_data` contains all columns in `data1` and `data2`. The columns of the IDs in data1 but not in data2 (and vice versa) will be filled with `NA`s accordingly
+`all_data` contains all columns in `data1` and `data2`. The columns of the IDs in `data1` but not in `data2` (and vice versa) will be filled with `NA`s accordingly
 
 ## Export data
 
 Writing text (or csv) file: 
 
 ```{r eval=FALSE}
-write.table(data, # what you eant to write 
+write.table(data, # what you want to write 
             file = "mydata.txt", # its name + extension
             header = TRUE, # first row with col names?
-            sep = "\t",  # column separtor 
+            sep = "\t",  # column separator 
             ....) # other arguments
 ```
 
@@ -799,7 +796,7 @@ write.table(data, # what you eant to write
 ```{r eval=FALSE}
 save(dat, file = "exp1_data.rda") # save something specific 
 save(file = "the_earth.rda")      # save the environment
-load("the_earth.rda") # load it back
+load("the_earth.rda")             # load it back
 ```
 
 # Programming 
@@ -827,7 +824,7 @@ ifelse(weight > 7, "big boy", "small boy")
 \begin{exampleblock}{Pros}
 
 - Super easy to use
-- Can embed multiple `ifelse()` cycles
+- Can embed multiple \texttt{ifelse()} cycles
 \end{exampleblock}
 
 
@@ -1029,6 +1026,36 @@ dcohen = function(group1, group2) { # Arguments
 }
 ```
 
+## Example 
+
+```{r echo = FALSE}
+dcohen = function(group1, group2) { # Arguments
+  mean_1 = mean(group1) ; mean_2 = mean(group2)
+  var_1 = var(group1) ; var_2 = mean(group2) # body
+  d = (mean_1 - mean_2)/sqrt(((var_1 + var_2)/2) )
+  dvalue = list(d = d)
+  class(dvalue) = "cohend"
+  return(dvalue) # results
+}
+print.cohen <- function(obj){
+  cat("\nMy Cohen's d\n\n")
+  cat("Effect size: ", obj$d, "\n")
+  invisible(obj) # return the object
+}
+```
+
+
+Compute the Cohen's *d* between a test group and a control group: 
+
+```{r}
+set.seed(082022) # results equal for everyone
+data <- data.frame(drug = rnorm(6, 10), 
+                   placebo = rnorm(6, 2))
+my_d = dcohen(data$drug, data$placebo)
+print.cohen(my_d)
+```
+
+
 ## Debugging 
 
 Use the `traceback()` function: 
@@ -1071,8 +1098,8 @@ gsub(pattern, replacement, x) # replace pattern
 `pattern` $=$ regular expression (`?regex`):
 
 ```{r eval= FALSE}
-foo # match pattern foo
-.* # match arbitrary character zero or more times
+foo      # match pattern foo
+.*       # match arbitrary character zero or more times
 [a-z0-9] # match alphanumeric character
 ```
 
@@ -1340,7 +1367,7 @@ install.packages("ggplot2") ; library(ggplot2)
 
 The code for the previous plot: 
 
-```{r}
+```{r eval = FALSE}
 ggplot(dat, aes(x = B, y = rt, group = A)) +  
   geom_point(pch=dat$A, size = 5) + 
   geom_line(aes(linetype=A), size=1)  + theme_classic() +
@@ -1348,12 +1375,27 @@ ggplot(dat, aes(x = B, y = rt, group = A)) +
                                 labels = c("A1", "A2")) +
   scale_x_discrete(labels = c("B1", "B2", "B3")) +
   theme(legend.position="top", 
-        panel.background =  element_rect(fill = "#FAFAFA", colour = "#FAFAFA"), 
+        panel.background =  element_rect(fill = "#FAFAFA", 
+                                         colour = "#FAFAFA"), 
         plot.background = element_rect(fill = "#FAFAFA"), 
         legend.key = element_rect(fill = "#FAFAFA"))
 ```
 
+##
 
+```{r eval = TRUE, out.with="100%", echo=FALSE}
+ggplot(dat, aes(x = B, y = rt, group = A)) +  
+  geom_point(pch=dat$A, size = 5) + 
+  geom_line(aes(linetype=A), size=1)  + theme_classic() +
+  ylab("RT") +  scale_linetype_manual("Task", values =c(3,4),
+                                labels = c("A1", "A2")) +
+  scale_x_discrete(labels = c("B1", "B2", "B3")) +
+  theme(legend.position="top", 
+        panel.background =  element_rect(fill = "#FAFAFA", 
+                                         colour = "#FAFAFA"), 
+        plot.background = element_rect(fill = "#FAFAFA"), 
+        legend.key = element_rect(fill = "#FAFAFA"))
+```
 
 
 ## Raw data
@@ -1392,7 +1434,7 @@ ggplot(states,
 
 ```{r eval=FALSE}
 states = data.frame(state.x77, state.name = state.name,
-state.region = state.region)
+                    state.region = state.region)
 
 ggplot(states, 
        aes(x = Population, y = Murder, 
@@ -1428,7 +1470,7 @@ Combine the plots together:
 
 ```{r eval = FALSE}
 grid.arrange(murder_raw, murder_lm, 
-             nrow=1) # plots forced to be on same raw
+             nrow=1) # plots forced to be the same row
 ```
 
  
