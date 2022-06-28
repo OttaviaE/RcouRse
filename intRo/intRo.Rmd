@@ -24,7 +24,8 @@ header-includes:
     - \newcommand\Factor{1.2}
     - \setbeamerfont{subtitle}{size=\large, series=\bfseries}
     - \definecolor{template}{RGB}{181, 18, 27}
-    - \setbeamercolor{frametitle}{bg=white}
+    - \definecolor{background}{RGB}{250, 250, 250}
+    - \setbeamercolor{frametitle}{bg=background}
     - \setbeamertemplate{frametitle}[default][center]
     - \AtBeginSection{\frame{\sectionpage}}
     - \setbeamercolor{section name}{fg=white}
@@ -32,14 +33,15 @@ header-includes:
     - \setbeamercolor{section title}{fg=template}
     - \setbeamercolor{frame subtitle}{fg=template}
     - \setbeamersize{text margin left=5mm,text margin right=5mm} 
-#    - \setbeamertemplate{navigation symbols}[horizontal] 
     - \AtBeginSection[]
           {
              \begin{frame}
              \frametitle{Table of Contents}
              \tableofcontents[currentsection]
               \end{frame}
-            }  
+          }    
+editor_options: 
+  chunk_output_type: console
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, 
@@ -1496,6 +1498,97 @@ murder_lm = ggplot(states,  # raw data
 grid.arrange(murder_raw, murder_lm, 
              nrow=1)
 ```
+
+
+# `R` for statistical computing
+
+## 
+
+The `stats` package (built-in package in `R`) contains function for statistical calculations and random number generator
+
+see `library(help=stats)`
+
+# Classical hypothesis testing in R
+
+## 
+
+Nominal data: 
+
+- `binom.test()`: exact test of a simple null
+hypothesis about the probability of success in a Bernoulli experiment
+
+- `chisq.test()`: contingency table  $\chi^2$ tests 
+
+Metric response variable: 
+
+- `cor.test()`: association between paired samples
+- `t.test()`: one- and two-sample *t* tests (also for paired data)
+- `var.test()`: $F$ for testing the homogeneity of variances 
+
+## What is the *p*-value?
+
+*p*-value: 
+
+>conditional probability of obtaining a test stastic that is at least as extreme as the one observed, given that the null hyphothesis is
+
+If $p < \alpha$ (i.e., the probability of rejecting the null hypothesis when it is true) $\rightarrow$ the null hypothesis is rejected
+
+```{r echo=FALSE, out.width="50%"}
+curve(dnorm(x,0,1),xlim=c(-4,4), 
+      bty = "n", xlab = "Value of test statistic", xaxt="n", 
+      yaxt="n", ylab = "Density of the sampling distribution", lwd =2)
+Axis(side=1, labels=FALSE, cex.axis = 1.5, padj = -1)
+abline(v = -1.96, lty=2)
+abline(v = 1.96, lty=2)
+
+text(expression(alpha/2), x = -2.8, y = 0.15, cex = 2)
+text(expression(alpha/2), x = 2.8, y = 0.15, cex = 2)
+text(expression(paste("1 - ", alpha)), x = -0.0, y = 0.15, cex = 2)
+
+```
+
+
+## Binomial test 
+
+Observations $X_i$ **must** be independent
+
+Hypotheses: 
+
+1. $H_0$: $p = p_0$ &nbsp; $H_1$: $p \neq p_0$
+2. $H_0$: $p = p_0$ &nbsp; $H_1$: $p < p_0$
+3. $H_0$: $p = p_0$ &nbsp; $H_1$: $p > p_0$
+
+Test statistic: 
+
+$$T = \displaystyle \sum_{i=1}^{n}X_i, \, \, \, T \sim \mathcal{B}(n, p_0)$$ 
+In `R`: 
+
+```{r eval = FALSE}
+binom.test(5, 10, p = 0.25)
+```
+
+## $\chi^2$ test (Goodness of fit)
+
+Independence of observations
+
+Hypothesis: 
+
+- $H_0$: $P(X_i = k) = p_k$ for all $k=1, \ldots, r (i = 1, \ldots, n)$
+
+- $H_0$: $P(X_i = k) = p_k$ for *at least* one  $k \in 1, \ldots, r (i = 1, \ldots, n)$
+
+Test statistic: 
+
+$$\chi^2 = \displaystyle \sum_{i=1}^{n}\frac{(f_o - f_e)^2}{f_e}, \, \, \chi^ \sim \chi^2(r-1)$$
+
+In `R`: 
+
+```{r eval=FALSE}
+tab <- xtabs(count ~ spray, InsectSprays)
+chisq.test(tab)
+```
+
+## $\chi^2$ test  of independence
 
 
 
