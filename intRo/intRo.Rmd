@@ -32,6 +32,7 @@ header-includes:
     - \setbeamercolor{title}{fg=template}
     - \setbeamercolor{section title}{fg=template}
     - \setbeamercolor{frame subtitle}{fg=template}
+    - \setbeamercolor{title}{fg=template}
     - \setbeamersize{text margin left=5mm,text margin right=5mm} 
     - \AtBeginSection[]
           {
@@ -39,7 +40,7 @@ header-includes:
              \frametitle{Table of Contents}
              \tableofcontents[currentsection]
               \end{frame}
-          }    
+          }   
 editor_options: 
   chunk_output_type: console
 ---
@@ -1567,45 +1568,174 @@ In `R`:
 binom.test(5, 10, p = 0.25)
 ```
 
-## $\chi^2$ test (Goodness of fit)
+## $\chi^2$ test 
 
 Independence of observations
 
 Hypothesis: 
 
-- $H_0$: $P(X_i = k) = p_k$ for all $k=1, \ldots, r (i = 1, \ldots, n)$
+- $H_0$: $P(X_{ij} = k) = p_k$ for all $i=1, \ldots, r$ and $j=1, \ldots, c$
 
-- $H_0$: $P(X_i = k) = p_k$ for *at least* one  $k \in 1, \ldots, r (i = 1, \ldots, n)$
+- $H_0$: $P(X_{ij} = k) \neq P(X_{i'j} = k)$ for *at least* one $i \in \{1, \ldots, r\}$ and $j \in \{1, \ldots, c\}$
 
 Test statistic: 
 
-$$\chi^2 = \displaystyle \sum_{i=1}^{n}\frac{(f_o - f_e)^2}{f_e}, \, \, \chi^ \sim \chi^2(r-1)$$
+$$\chi^2 = \displaystyle \sum_{i=1}^{n}\frac{(x_{ij} - \hat{x}_{ij})^2}{\hat{x}_{ij}}, \, \, \chi^2 \sim \chi^2(r-1)$$
 
 In `R`: 
 
 ```{r eval=FALSE}
-tab <- xtabs(count ~ spray, InsectSprays)
+tab <- xtabs(~ education + induced, infert)
 chisq.test(tab)
 ```
 
-## $\chi^2$ test  of independence
+
+## Correlation test
+
+Hypothesis: 
+
+- $H_0$: $\rho_{XY} = 0$, $H_1$: $\rho_{xy} \neq 0$
+- $H_0$: $\rho_{XY} = 0$, $H_1$: $\rho_{xy} < 0$
+- $H_0$: $\rho_{XY} = 0$, $H_1$: $\rho_{xy} >0$
+
+Test statistic: 
+
+$$T = \frac{r_{xy}}{\sqrt{1-r_{xy}^2}}\sqrt{n-2}, \, \, T \sim t(n-2)$$
+In `R`:
+
+```{r eval=FALSE}
+cor.test(~ speed + dist, cars, 
+         alternative = "two.sided")
+```
+
+## Two (indepdent) sample $t$ test
+
+Independent samples from normally distributions where $\sigma^2$ are unknown but homogeneous 
+
+- $H_0$: $\mu_{x_1 - x_2} = 0$, $H_1$: $\mu_{x_1 - x_2} \neq 0$
+- $H_0$: $\mu_{x_1 - x_2} = 0$, $H_1$: $\mu_{x_1 - x_2} < 0$
+- $H_0$: $\mu_{x_1 - x_2} = 0$, $H_1$: $\mu_{x_1 - x_2} > 0$
+
+Test statistic: 
+
+$$T = \frac{\bar{x_1} - \bar{x_2}}{\sigma_{\bar{x_1}-\bar{y_2}}}, \, \, T \sim t(n_1 + n_2 - 2)$$
+
+`R` function: 
+
+```{r eval=FALSE}
+t.test(len ~ supp, data = ToothGrowth, 
+       var.equal = TRUE)
+```
+
+## Two (depedent) sample $t$ test
+
+Observations on the same sample
+
+Hypothesis:
+
+- $H_0$: $\mu_{D} = 0$, $H_1$: $\mu_{D} \neq 0$
+- $H_0$: $\mu_{D} = 0$, $H_1$: $\mu_{D} < 0$
+- $H_0$: $\mu_{D} = 0$, $H_1$: $\mu_{D} > 0$
+
+Test statistic: 
+
+$$T = \frac{d}{\sigma_{d}}, \, \, \, T \sim t(m-1)$$
 
 
 
 
-<!-- ## Execersizes -->
+`R` function: 
 
-<!-- - Open a new `R` script -->
+```{r eval=FALSE}
+with(sleep,
+     t.test(extra[group == 1],
+            extra[group == 2], paired = TRUE))
+```
 
-<!-- - Create one vector for each type (`int`, `num`, `chr`, `logi`, `factor`) and assign each of them to an object -->
+# Generalized Linear Models (GLMs)
 
-<!-- - Compute the mean of the  `int` and `num` vectors -->
+## Formulae
 
-<!-- - Standardize the values of the `int` and `num` vectors and store them in two new objects:  -->
+Statistical models are represented by formulae which are extremely close to the actual statistical notation: 
 
-<!-- $$ z = \frac{x_i - \bar{X}}{sd}$$ -->
 
-<!-- - Create a new vector by combining together the `logi` and `int` vectors -->
+<!-- \begin{tabular}{l l} -->
+<!-- \multicolumn{2}{l}{Formulae used in \texttt{lm()} and \texttt{glm()}.}\\ -->
+<!-- \texttt{y ~ 1 + x} & $y_i = \beta_0 + \beta_1 x_i + \varepsilon_i$ \\ -->
+<!-- \texttt{y ~ x} & (same but short)\\ -->
+<!-- \texttt{y ~ 0 + x} & $y_i = \beta_1 x_i + \varepsilon_i$ \\ -->
+<!-- \texttt{y ~ x_A * x_B} & $y_i = \beta_0 + \beta_1 x_i + \beta_2 x_j + (\beta_1 \beta_2)x_{ij}  + \varepsilon_{ij}$ \\ -->
+<!-- \end{tabular} -->
 
-<!-- - Add the `logi` vector to the `num` vector -->
+## Linear models 
+
+$$y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \ldots + \beta_kx_k + \varepsilon$$
+In `R`: 
+
+```{r eval = FALSE}
+lm(y ~ x1 + x2 + ... + xk, data)
+```
+
+## Extractor functions I 
+
+```{r eval = FALSE}
+coef()    # Extract the regression coefficients
+summary() # Print a comprehensive summary of the results of
+          # the regression analysis
+anova()   # Compare nested models and produce an analysis
+resid()   # Extract the (matrix of) residuals
+plot()    # Produce four plots, showing residuals, fitted
+          # values and some diagnostics
+model.matrix()
+          # Return the design matrix
+```
+
+## Extractor functions II 
+
+```{r eval = FALSE}
+vcov()    # Return the variance-covariance matrix of the
+          # main parameters of a fitted model object
+predict() # A new data frame must be supplied having the
+          # same variables specified with the same labels
+          # as the original. The value is a vector or
+          # matrix of predicted values corresponding to
+          # the determining variable values in data frame
+step()    # Select a suitable model by adding or dropping
+          # terms and preserving hierarchies. The model
+          # with the smallest value of AIC (Akaike’s
+          # Information Criterion) discovered in the
+          # stepwise search is returned
+```
+
+
+## Generalized linear models
+
+$$g(\mu) = \beta_0 + \beta_1x_1 + \beta_2x_2 + \ldots + \beta_kx_k + \varepsilon$$
+$g()$ is the link functions that connects the mean to the linear combination of predictors. 
+
+A GLM is composed of three elements: The response distribution, the link function, and the linear combination of predictors
+
+In `R`:
+
+```{r eval=FALSE}
+glm(y ~ x1 + x2 + ... + xk, family(link), 
+    data)
+```
+
+## Families 
+
+A special link function to each response variable. In `R` some different link functions are available by default:
+
+```{r eval = FALSE}
+## Family name Link functions
+binomial logit, probit, log, cloglog
+gaussian identity, log, inverse
+Gamma identity, inverse, log
+inverse.gaussian 1/mu^2, identity, inverse, log
+poisson log, identity, sqrt
+quasi logit, probit, cloglog, identity,
+inverse, log, 1/mu^2, sqrt
+```
+
+
 
