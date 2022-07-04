@@ -2,7 +2,7 @@
 title: "Shine bright like an open source app"
 subtitle: "An introduction to shiny"
 author: "Ottavia Epifania"
-# runtime: shiny
+runtime: shiny
 output:  
       ioslides_presentation:
         highlight: kate
@@ -711,99 +711,13 @@ shinyApp(
     sidebarPanel(
       selectInput(inputId = "dataset",
                   label = "Choose a dataset:",
-                  choices = list("rock" = 1, # we add numbers to the dataset labels
+                  choices = list("rock" = 1, # we add numbers to the data set labels
                                  "pressure" = 2,
                                  "cars" = 3,
                                  "I want to use my data!!" =4)), # we add an option
       # Let me introduce you Mr. Conditional Panel
       conditionalPanel(
-        condition = "input.dataset == '4'", # What is the condtion for which I should show up?
-        # What should be displayed inside me once I show up?
-        fileInput("example",  # label for the server
-                  "", # no displayed label for users
-                  accept = c("csv")) # what format do we accept?
-      ),
-      actionButton("load", "Upload data")
-    ),
-
-    mainPanel(
-      plotOutput(
-        "graph"
-      ),
-      verbatimTextOutput(
-        "summary"
-      )
-    ) # display output
-  )
-),
-
-server = function(input, output){
-    values <- reactiveValues()
-  dataInput <- reactive({
-    if(input$dataset == 1){ # now we use the number associated with each dataset
-      data <- rock
-    } else if (input$dataset == 2 ){
-      data <- pressure
-    } else if (input$dataset == 3) {
-      data <- cars
-    } else if (input$dataset == 4) {
-      data <- read.csv(input$example$datapath) # we call the input for the data
-            #import by its label and we ask for the datapath selceted by the user
-    }
-  })
-  observeEvent(input$load, # we load the dataset (whatever it is only once the
-                                       #  user has hit the button)
-               {
-    values$data <- data.frame(dataInput())
-  })
-
-  output$graph <- renderPlot({
-    validate(
-      need(input$load > 0, "Waiting for data")
-    )
-    if (any(colnames(values$data) == "condition") ){ # I had to change the code
-      #just for the new dataset, which is differnet from all the others
-      plot(values$data$tr ~ values$data$condition,
-           xlab = "Condition", ylab = "TR")
-    } else {
-      plot(values$data[, c(1:2)])
-    }
-  })
-
-  output$summary <- renderPrint({
-    validate(
-      need(input$load > 0, "Waiting for data")
-    )
-    if (any(colnames(values$data) == "condition") ){
-      summary(values$data[, c(2:3)])
-    } else {
-      summary(values$data[, c(1:2)])
-    }
-  })
-},
-
-
-  options = list(height = 800)
-)
-```
-
-## Let the users use their data
-
-```{r echo = TRUE,eval=FALSE}
-shinyApp(
-
-  ui = fluidPage(
-  sidebarLayout(
-    sidebarPanel(
-      selectInput(inputId = "dataset",
-                  label = "Choose a dataset:",
-                  choices = list("rock" = 1, # we add numbers to the dataset labels
-                                 "pressure" = 2,
-                                 "cars" = 3,
-                                 "I want to use my data!!" =4)), # we add an option
-      # Let me introduce you Mr. Conditional Panel
-      conditionalPanel(
-        condition = "input.dataset == '4'", # What is the condtion for which I should show up?
+        condition = "input.dataset == '4'", # What is the condition for which I should show up?
         # What should be displayed inside me once I show up?
         fileInput("example",  # label for the server
                   "", # no displayed label for users
@@ -834,10 +748,10 @@ server = function(input, output){
       data <- cars
     } else if (input$dataset == 4) {
       data <- read.csv(input$example$datapath) # we call the input for the data 
-            #import by its label and we ask for the datapath selceted by the user
+            #import by its label and we ask for the data path selected by the user
     }
   })
-  observeEvent(input$load, # we load the dataset (whatever it is only once the 
+  observeEvent(input$load, # we load the data set (whatever it is only once the 
                                        #  user has hit the button)
                {
     values$data <- data.frame(dataInput())
@@ -848,7 +762,107 @@ server = function(input, output){
       need(input$load > 0, "Waiting for data")
     )
     if (any(colnames(values$data) == "condition") ){ # I had to change the code 
-      #just for the new dataset, which is differnet from all the others
+      #just for the new data set, which is different from all the others
+      # check if there are characters
+      if (any(sapply(values$data, is.character)) == TRUE) {
+  values$data[, sapply(values$data, is.character) == T] = lapply(values$data[, sapply(values$data, is.character) == T], 
+                                                 as.factor)
+} else {
+  values$data = values$data
+}
+      plot(values$data$tr ~ values$data$condition,
+           xlab = "Condition", ylab = "TR")
+    } else {
+      plot(values$data[, c(1:2)])
+    }
+  })
+
+  output$summary <- renderPrint({
+    validate(
+      need(input$load > 0, "Waiting for data")
+    )
+    if (any(colnames(values$data) == "condition") ){
+      summary(values$data[, c(2:3)])
+    } else {
+      summary(values$data[, c(1:2)])
+    }
+  })
+},
+
+
+  options = list(height = 800)
+)
+```
+
+## Let the users use their data: Code
+
+```{r echo = TRUE,eval=FALSE}
+shinyApp(
+
+  ui = fluidPage(
+  sidebarLayout(
+    sidebarPanel(
+      selectInput(inputId = "dataset",
+                  label = "Choose a dataset:",
+                  choices = list("rock" = 1, # we add numbers to the data set labels
+                                 "pressure" = 2,
+                                 "cars" = 3,
+                                 "I want to use my data!!" =4)), # we add an option
+      # Let me introduce you Mr. Conditional Panel
+      conditionalPanel(
+        condition = "input.dataset == '4'", # What is the condition for which I should show up?
+        # What should be displayed inside me once I show up?
+        fileInput("example",  # label for the server
+                  "", # no displayed label for users
+                  accept = c("csv")) # what format do we accept?
+      ),
+      actionButton("load", "Upload data")
+    ),
+
+    mainPanel(
+      plotOutput(
+        "graph"
+      ),
+      verbatimTextOutput(
+        "summary"
+      )
+    ) # display output
+  )
+),
+
+server = function(input, output){
+    values <- reactiveValues()
+  dataInput <- reactive({
+    if(input$dataset == 1){ # now we use the number associated with each dataset 
+      data <- rock
+    } else if (input$dataset == 2 ){
+      data <- pressure
+    } else if (input$dataset == 3) {
+      data <- cars
+    } else if (input$dataset == 4) {
+      data <- read.csv(input$example$datapath) # we call the input for the data 
+            #import by its label and we ask for the data path selected by the user
+    }
+  })
+  observeEvent(input$load, # we load the data set (whatever it is only once the 
+                                       #  user has hit the button)
+               {
+    values$data <- data.frame(dataInput())
+  })
+
+  output$graph <- renderPlot({
+    validate(
+      need(input$load > 0, "Waiting for data")
+    )
+    if (any(colnames(values$data) == "condition") ){ # I had to change the code 
+      #just for the new data set, which is different from all the others
+      # check if there are characters
+      if (any(sapply(values$data, is.character)) == TRUE) {
+  values$data[, sapply(values$data, is.character) == T] = lapply(values$data[, sapply(values$data, is.character) == T], 
+                                                 as.factor)
+} else {
+  values$data = values$data
+}
       plot(values$data$tr ~ values$data$condition,
            xlab = "Condition", ylab = "TR")
     } else {
@@ -876,6 +890,7 @@ server = function(input, output){
 
 
 ## Code has to be fluid and adapt to everything (like a cat)
+
 ```{r, out.width = "200px", fig.align='center', echo = FALSE}
 knitr::include_graphics("liquid-cats1.jpg")
 ```
@@ -958,6 +973,13 @@ server = function(input, output){
   
   newdata <- observeEvent(input$select, # use observe event so that the app will 
                           { # wait for you to decide before acting
+                            # always check whether there are characters
+                            if (any(sapply(values$data, is.character)) == TRUE) {
+  values$data[, sapply(values$data, is.character) == T] = lapply(values$data[, sapply(values$data, is.character) == T], 
+                                                 as.factor)
+} else {
+  values$data = values$data
+}
                             # Besides, you're creating a new (smaller) object
                             values$df <- values$data[c(input$var1, input$var2)]
                           })
@@ -965,6 +987,7 @@ server = function(input, output){
     validate(
       need(input$select > 0, "Waiting for data") # I changed the validation from
     )                                        # load to select
+    
     df <- values$df # store the new object into an R object
     plot(df[, c(1:2)]) # use it normally
 
@@ -990,12 +1013,133 @@ server = function(input, output){
 
 ```{r echo=FALSE, eval=TRUE}
 shinyApp(
+  
+  ui = fluidPage(
+    sidebarLayout(
+      sidebarPanel(
+        selectInput(inputId = "dataset",
+                    label = "Choose a dataset:",
+                    choices = list("rock" = 1,
+                                   "pressure" = 2,
+                                   "cars" = 3,
+                                   "I want to use my data!!" =4)),
+        
+        conditionalPanel(
+          condition = "input.dataset == '4'",
+          fileInput("example",
+                    "", accept = c("csv"))
+        ), 
+        actionButton("load", "Upload data"), # This is the button for uploading 
+        # the data
+        conditionalPanel(                    # It appears only when the data are 
+          condition = "input.load >= '1'",   # loaded
+          uiOutput("var1"),                 # contains the name for variable 1
+          uiOutput("var2"),                 # contains the name for variable 2
+          actionButton("select", "Select & Display") # This is the button for 
+        ),                              # selecting the variables and actually see
+        # something
+      ),
+      
+      mainPanel(
+        plotOutput(
+          "graph"
+        ),
+        verbatimTextOutput(
+          "summary"
+        )
+      ) # display output
+    )
+  ),
+  
+  server = function(input, output){
+    values <- reactiveValues()
+    dataInput <- reactive({
+      if(input$dataset == 1){
+        data <- rock
+      } else if (input$dataset == 2 ){
+        data <- pressure
+      } else if (input$dataset == 3) {
+        data <- cars
+      } else if (input$dataset == 4) {
+        data <- read.csv(input$example$datapath)
+      }
+    })
+    observeEvent(input$load, {
+      values$data <- data.frame(dataInput())
+    })
+    
+    output$var1 <- renderUI({    # remember variable 1? here it is how we extract it
+      nam <- colnames(values$data) # from the data set
+      selectInput("var1", label = "Select x:", # create the input
+                  choices = c(nam), multiple = FALSE,
+                  selected = nam[1])
+    })
+    
+    output$var2 <- renderUI({
+      nam2 <- colnames(values$data) # create the input for variable 2
+      selectInput("var2", label = "Select y:",
+                  choices = c(nam2), multiple = FALSE,
+                  selected = nam2[1])
+    })
+    
+    newdata <- observeEvent(input$select, # use observe event so that the app will 
+                            { # wait for you to decide before acting
+                              if (any(sapply(values$data, is.character)) == TRUE) {
+                                values$data[, sapply(values$data, is.character) == T] = lapply(values$data[, sapply(values$data, is.character) == T], 
+                                                                                               as.factor)
+                              } else {
+                                values$data = values$data
+                              }
+                              # Besides, you're creating a new (smaller) object
+                              values$df <- values$data[c(input$var1, input$var2)]
+                            })
+    output$graph <- renderPlot({
+      validate(
+        need(input$select > 0, "Waiting for data") # I changed the validation from
+      )                                        # load to select
+      
+      df <- values$df # store the new object into an R object
+      plot(df[, c(1:2)]) # use it normally
+      
+      
+    })
+    
+    output$summary <- renderPrint({
+      validate(
+        need(input$select > 0, "Waiting for data")
+      ) 
+      df <- values$df # same 
+      summary(df[, c(1:2)])
+      
+    })
+  },
+  
+  
+  options = list(height = 800)
+)
+
+```
+
+
+## Interactive plots
+
+```{r echo = FALSE, eval=TRUE, message=FALSE, warning=FALSE}
+library(shinyjs)
+shinyApp(
 
  ui = fluidPage(
+      useShinyjs(),  # Set up shinyjs
   sidebarLayout(
-    sidebarPanel(
+    sidebarPanel(style = "background-color: 		#e1e9f9;",
+                    a(id = "imp_det", h3("Choose a dataset", style = "font-style: normal; font-size: 14pt;"), href = "#"),
+          shinyjs::hidden(div(
+            id = "details_import",
+            helpText(
+              h5("You can also upload your data!")
+            )
+          )),
       selectInput(inputId = "dataset",
-                  label = "Choose a dataset:",
+                  label = "",
                   choices = list("rock" = 1,
                                  "pressure" = 2,
                                  "cars" = 3,
@@ -1019,11 +1163,26 @@ shinyApp(
 
     mainPanel(
       plotOutput(
-        "graph"
-      ),
-      verbatimTextOutput(
+        "graph",
+        click = clickOpts(id = "plot_click"), # when we click we select a point
+        brush = brushOpts(id = "plot_brush") # whe we highlight an area we select
+      ),     # many rows
+      fluidRow( # it displays on the same row multiple arguments
+      column(4, # first column with the summary verbatim output
+             verbatimTextOutput(
         "summary"
+      )),
+      column(4,  # second column with another verbatim output for the points
+             verbatimTextOutput(
+               "points"
+             )
+             ),
+      column(4,
+             verbatimTextOutput(
+               "brush"
+             ))
       )
+
     ) # display output
   )
 ),
@@ -1036,7 +1195,7 @@ server = function(input, output){
     } else if (input$dataset == 2 ){
       data <- pressure
     } else if (input$dataset == 3) {
-      data <- cars
+      data <- mtcars
     } else if (input$dataset == 4) {
       data <- read.csv(input$example$datapath)
     }
@@ -1044,23 +1203,34 @@ server = function(input, output){
   observeEvent(input$load, {
     values$data <- data.frame(dataInput())
   })
-
+   shinyjs::onclick("imp_det",
+                   shinyjs::toggle(id = "details_import", anim = TRUE))
+  observeEvent(input$load, {
+    values$data <- data.frame(dataInput())
+  })
   output$var1 <- renderUI({    # remember variable 1? here it is how we extract it
     nam <- colnames(values$data) # from the data set
     selectInput("var1", label = "Select x:", # create the input
-                choices = c(nam), multiple = FALSE,
+                choices = c(nam), multiple = F,
                 selected = nam[1])
   })
 
   output$var2 <- renderUI({
     nam2 <- colnames(values$data) # create the input for variable 2
     selectInput("var2", label = "Select y:",
-                choices = c(nam2), multiple = FALSE,
+                choices = c(nam2), multiple = F,
                 selected = nam2[1])
   })
 
   newdata <- observeEvent(input$select, # use observe event so that the app will
                           { # wait for you to decide before acting
+                            # check the characters
+                            if (any(sapply(values$data, is.character)) == TRUE) {
+                                values$data[, sapply(values$data, is.character) == T] = lapply(values$data[, sapply(values$data, is.character) == T], 
+                                                                                               as.factor)
+                              } else {
+                                values$data = values$data
+                              }
                             # Besides, you're creating a new (smaller) object
                             values$df <- values$data[c(input$var1, input$var2)]
                           })
@@ -1082,6 +1252,33 @@ server = function(input, output){
     summary(df[, c(1:2)])
 
   })
+
+  output$points <- renderPrint({
+    df <- values$df # store the data frame in an object
+    pointID <- nearPoints(df, # the data frame
+                          input$plot_click, # the command for a reaction
+                           xvar = names(df)[colnames(df) == input$var1], # xvar of the graph
+                          yvar = names(df)[colnames(df) == input$var2], # yvar of the graph,
+                          addDist = FALSE)
+    validate(
+      need(nrow(pointID) != 0, "Click on a point") # Waiting message
+    )
+    pointID
+  })
+
+   output$brush <- renderPrint({
+    df <- values$df # store the data frame in an object
+    brushID <- brushedPoints(df,# the  data frame
+                             input$plot_brush, # the command for a reaction
+                          xvar = names(df)[colnames(df) == input$var1], # xvar of the graph
+                          yvar = names(df)[colnames(df) == input$var2], # yvar of the graph
+                             )
+    validate(
+      need(nrow(brushID) != 0, "Highlight Area") # Waiting message
+    )
+      brushID
+  })
+
 },
 
 
@@ -1089,320 +1286,169 @@ server = function(input, output){
 )
 ```
 
+## Interactive plots code
 
-<!-- ## Beyond -->
+```{r echo = TRUE, eval=FALSE}
+library(shinyjs)
+shinyApp(
 
-<!-- ```{r echo = FALSE, eval=TRUE, message=FALSE, warning=FALSE} -->
-<!-- library(shinyjs) -->
-<!-- shinyApp( -->
+ ui = fluidPage(includeCSS("style.css"),
+      useShinyjs(),  # Set up shinyjs
+  sidebarLayout(
+    sidebarPanel(style = "background-color: 		#e1e9f9;",
+                    a(id = "imp_det", h3("Choose a dataset", style = "font-style: normal; font-size: 14pt;"), href = "#"),
+          shinyjs::hidden(div(
+            id = "details_import",
+            helpText(
+              h5("You can also upload your data!")
+            )
+          )),
+      selectInput(inputId = "dataset",
+                  label = "",
+                  choices = list("rock" = 1,
+                                 "pressure" = 2,
+                                 "cars" = 3,
+                                 "I want to use my data!!" =4)),
 
-<!--  ui = fluidPage(includeCSS("style.css"), -->
-<!--       useShinyjs(),  # Set up shinyjs -->
-<!--   sidebarLayout( -->
-<!--     sidebarPanel(style = "background-color: 		#e1e9f9;", -->
-<!--                     a(id = "imp_det", h3("Choose a dataset", style = "font-style: normal; font-size: 14pt;"), href = "#"), -->
-<!--           shinyjs::hidden(div( -->
-<!--             id = "details_import", -->
-<!--             helpText( -->
-<!--               h5("You can also upload your data!") -->
-<!--             ) -->
-<!--           )), -->
-<!--       selectInput(inputId = "dataset", -->
-<!--                   label = "", -->
-<!--                   choices = list("rock" = 1, -->
-<!--                                  "pressure" = 2, -->
-<!--                                  "cars" = 3, -->
-<!--                                  "I want to use my data!!" =4)), -->
+      conditionalPanel(
+        condition = "input.dataset == '4'",
+        fileInput("example",
+                  "", accept = c("csv"))
+      ),
+      actionButton("load", "Upload data"), # This is the button for uploading
+                                            # the data
+      conditionalPanel(                    # It appears only when the data are
+        condition = "input.load >= '1'",   # loaded
+        uiOutput("var1"),                 # contains the name for variable 1
+        uiOutput("var2"),                 # contains the name for variable 2
+        actionButton("select", "Select & Display") # This is the button for
+      ),                              # selecting the variables and actually see
+                                      # something
+    ),
 
-<!--       conditionalPanel( -->
-<!--         condition = "input.dataset == '4'", -->
-<!--         fileInput("example", -->
-<!--                   "", accept = c("csv")) -->
-<!--       ),  -->
-<!--       actionButton("load", "Upload data"), # This is the button for uploading  -->
-<!--                                             # the data -->
-<!--       conditionalPanel(                    # It appears only when the data are  -->
-<!--         condition = "input.load >= '1'",   # loaded -->
-<!--         uiOutput("var1"),                 # contains the name for variable 1 -->
-<!--         uiOutput("var2"),                 # contains the name for variable 2 -->
-<!--         actionButton("select", "Select & Display") # This is the button for  -->
-<!--       ),                              # selecting the variables and actually see -->
-<!--                                       # something -->
-<!--     ), -->
+    mainPanel(
+      plotOutput(
+        "graph",
+        click = clickOpts(id = "plot_click"), # when we click we select a point
+        brush = brushOpts(id = "plot_brush") # whe we highlight an area we select
+      ),     # many rows
+      fluidRow( # it displays on the same row multiple arguments
+      column(5, # first column with the summary verbatim output
+             verbatimTextOutput(
+        "summary"
+      )),
+      column(4,  # second column with another verbatim output for the points
+             verbatimTextOutput(
+               "points"
+             )
+             ),
+      column(4,
+             verbatimTextOutput(
+               "brush"
+             ))
+      )
 
-<!--     mainPanel( -->
-<!--       plotOutput( -->
-<!--         "graph",  -->
-<!--         click = clickOpts(id = "plot_click"), # when we click we select a point -->
-<!--         brush = brushOpts(id = "plot_brush") # whe we highlight an area we select -->
-<!--       ),     # many rows -->
-<!--       fluidRow( # it displays on the same row multiple arguments -->
-<!--       column(4, # first column with the summary verbatim output -->
-<!--              verbatimTextOutput( -->
-<!--         "summary" -->
-<!--       )),  -->
-<!--       column(4,  # second column with another verbatim output for the points -->
-<!--              verbatimTextOutput( -->
-<!--                "points" -->
-<!--              ) -->
-<!--              ), -->
-<!--       column(4,  -->
-<!--              verbatimTextOutput( -->
-<!--                "brush" -->
-<!--              )) -->
-<!--       ) -->
+    ) # display output
+  )
+),
 
-<!--     ) # display output -->
-<!--   ) -->
-<!-- ), -->
+server = function(input, output){
+  values <- reactiveValues()
+  dataInput <- reactive({
+    if(input$dataset == 1){
+      data <- rock
+    } else if (input$dataset == 2 ){
+      data <- pressure
+    } else if (input$dataset == 3) {
+      data <- mtcars
+    } else if (input$dataset == 4) {
+      data <- read.csv(input$example$datapath)
+    }
+  })
+  observeEvent(input$load, {
+    values$data <- data.frame(dataInput())
+  })
+   shinyjs::onclick("imp_det",
+                   shinyjs::toggle(id = "details_import", anim = TRUE))
+  observeEvent(input$load, {
+    values$data <- data.frame(dataInput())
+  })
+  output$var1 <- renderUI({    # remember variable 1? here it is how we extract it
+    nam <- colnames(values$data) # from the data set
+    selectInput("var1", label = "Select x:", # create the input
+                choices = c(nam), multiple = F,
+                selected = nam[1])
+  })
 
-<!-- server = function(input, output){ -->
-<!--   values <- reactiveValues() -->
-<!--   dataInput <- reactive({ -->
-<!--     if(input$dataset == 1){ -->
-<!--       data <- rock -->
-<!--     } else if (input$dataset == 2 ){ -->
-<!--       data <- pressure -->
-<!--     } else if (input$dataset == 3) { -->
-<!--       data <- mtcars -->
-<!--     } else if (input$dataset == 4) { -->
-<!--       data <- read.csv(input$example$datapath) -->
-<!--     } -->
-<!--   }) -->
-<!--   observeEvent(input$load, { -->
-<!--     values$data <- data.frame(dataInput()) -->
-<!--   }) -->
-<!--    shinyjs::onclick("imp_det", -->
-<!--                    shinyjs::toggle(id = "details_import", anim = TRUE)) -->
-<!--   observeEvent(input$load, { -->
-<!--     values$data <- data.frame(dataInput()) -->
-<!--   }) -->
-<!--   output$var1 <- renderUI({    # remember variable 1? here it is how we extract it -->
-<!--     nam <- colnames(values$data) # from the data set -->
-<!--     selectInput("var1", label = "Select x:", # create the input -->
-<!--                 choices = c(nam), multiple = F, -->
-<!--                 selected = nam[1]) -->
-<!--   }) -->
+  output$var2 <- renderUI({
+    nam2 <- colnames(values$data) # create the input for variable 2
+    selectInput("var2", label = "Select y:",
+                choices = c(nam2), multiple = F,
+                selected = nam2[1])
+  })
 
-<!--   output$var2 <- renderUI({ -->
-<!--     nam2 <- colnames(values$data) # create the input for variable 2 -->
-<!--     selectInput("var2", label = "Select y:", -->
-<!--                 choices = c(nam2), multiple = F, -->
-<!--                 selected = nam2[1]) -->
-<!--   }) -->
-
-<!--   newdata <- observeEvent(input$select, # use observe event so that the app will  -->
-<!--                           { # wait for you to decide before acting -->
-<!--                             # Besides, you're creating a new (smaller) object -->
-<!--                             values$df <- values$data[c(input$var1, input$var2)] -->
-<!--                           }) -->
-<!--   output$graph <- renderPlot({ -->
-<!--     validate( -->
-<!--       need(input$select > 0, "Waiting for data") # I changed the validation from -->
-<!--     )                                        # load to select -->
-<!--     df <- values$df # store the new object into an R object -->
-<!--     plot(df[, c(1:2)]) # use it normally -->
-
-
-<!--   }) -->
-
-<!--   output$summary <- renderPrint({ -->
-<!--     validate( -->
-<!--       need(input$select > 0, "Waiting for data") -->
-<!--     )  -->
-<!--     df <- values$df # same  -->
-<!--     summary(df[, c(1:2)]) -->
-
-<!--   }) -->
-
-<!--   output$points <- renderPrint({ -->
-<!--     df <- values$df # store the dataframe in an object  -->
-<!--     pointID <- nearPoints(df, # the dataframe -->
-<!--                           input$plot_click, # the command for a reaction -->
-<!--                            xvar = names(df)[colnames(df) == input$var1], # xvar of the graph -->
-<!--                           yvar = names(df)[colnames(df) == input$var2], # yvar of the graph, -->
-<!--                           addDist = FALSE)  -->
-<!--     validate( -->
-<!--       need(nrow(pointID) != 0, "Click on a point") # Waiting message -->
-<!--     ) -->
-<!--     pointID -->
-<!--   }) -->
-
-<!--    output$brush <- renderPrint({ -->
-<!--     df <- values$df # store the dataframe in an object  -->
-<!--     brushID <- brushedPoints(df,# the  dataframe  -->
-<!--                              input$plot_brush, # the command for a reaction -->
-<!--                           xvar = names(df)[colnames(df) == input$var1], # xvar of the graph -->
-<!--                           yvar = names(df)[colnames(df) == input$var2], # yvar of the graph -->
-<!--                              ) -->
-<!--     validate( -->
-<!--       need(nrow(brushID) != 0, "Highlight Area") # Waiting message -->
-<!--     ) -->
-<!--       brushID -->
-<!--   }) -->
-
-<!-- }, -->
+  newdata <- observeEvent(input$select, # use observe event so that the app will
+                          { # wait for you to decide before acting
+                            if (any(sapply(values$data, is.character)) == TRUE) {
+                                values$data[, sapply(values$data, is.character) == T] = lapply(values$data[, sapply(values$data, is.character) == T], 
+                                                                                               as.factor)
+                              } else {
+                                values$data = values$data
+                              }
+                            # Besides, you're creating a new (smaller) object
+                            values$df <- values$data[c(input$var1, input$var2)]
+                          })
+  output$graph <- renderPlot({
+    validate(
+      need(input$select > 0, "Waiting for data") # I changed the validation from
+    )                                        # load to select
+    df <- values$df # store the new object into an R object
+    plot(df[, c(1:2)]) # use it normally
 
 
-<!--   options = list(height = 800) -->
-<!-- ) -->
-<!-- ``` -->
+  })
 
-<!-- ```{r echo = TRUE, eval=FALSE} -->
-<!-- library(shinyjs) -->
-<!-- shinyApp( -->
+  output$summary <- renderPrint({
+    validate(
+      need(input$select > 0, "Waiting for data")
+    )
+    df <- values$df # same
+    summary(df[, c(1:2)])
 
-<!--  ui = fluidPage(includeCSS("style.css"), -->
-<!--       useShinyjs(),  # Set up shinyjs -->
-<!--   sidebarLayout( -->
-<!--     sidebarPanel(style = "background-color: 		#e1e9f9;", -->
-<!--                     a(id = "imp_det", h3("Choose a dataset", style = "font-style: normal; font-size: 14pt;"), href = "#"), -->
-<!--           shinyjs::hidden(div( -->
-<!--             id = "details_import", -->
-<!--             helpText( -->
-<!--               h5("You can also upload your data!") -->
-<!--             ) -->
-<!--           )), -->
-<!--       selectInput(inputId = "dataset", -->
-<!--                   label = "", -->
-<!--                   choices = list("rock" = 1, -->
-<!--                                  "pressure" = 2, -->
-<!--                                  "cars" = 3, -->
-<!--                                  "I want to use my data!!" =4)), -->
+  })
 
-<!--       conditionalPanel( -->
-<!--         condition = "input.dataset == '4'", -->
-<!--         fileInput("example", -->
-<!--                   "", accept = c("csv")) -->
-<!--       ),  -->
-<!--       actionButton("load", "Upload data"), # This is the button for uploading  -->
-<!--                                             # the data -->
-<!--       conditionalPanel(                    # It appears only when the data are  -->
-<!--         condition = "input.load >= '1'",   # loaded -->
-<!--         uiOutput("var1"),                 # contains the name for variable 1 -->
-<!--         uiOutput("var2"),                 # contains the name for variable 2 -->
-<!--         actionButton("select", "Select & Display") # This is the button for  -->
-<!--       ),                              # selecting the variables and actually see -->
-<!--                                       # something -->
-<!--     ), -->
+  output$points <- renderPrint({
+    df <- values$df # store the data frame in an object
+    pointID <- nearPoints(df, # the data frame
+                          input$plot_click, # the command for a reaction
+                           xvar = names(df)[colnames(df) == input$var1], # xvar of the graph
+                          yvar = names(df)[colnames(df) == input$var2], # yvar of the graph,
+                          addDist = FALSE)
+    validate(
+      need(nrow(pointID) != 0, "Click on a point") # Waiting message
+    )
+    pointID
+  })
 
-<!--     mainPanel( -->
-<!--       plotOutput( -->
-<!--         "graph",  -->
-<!--         click = clickOpts(id = "plot_click"), # when we click we select a point -->
-<!--         brush = brushOpts(id = "plot_brush") # whe we highlight an area we select -->
-<!--       ),     # many rows -->
-<!--       fluidRow( # it displays on the same row multiple arguments -->
-<!--       column(5, # first column with the summary verbatim output -->
-<!--              verbatimTextOutput( -->
-<!--         "summary" -->
-<!--       )),  -->
-<!--       column(4,  # second column with another verbatim output for the points -->
-<!--              verbatimTextOutput( -->
-<!--                "points" -->
-<!--              ) -->
-<!--              ), -->
-<!--       column(4,  -->
-<!--              verbatimTextOutput( -->
-<!--                "brush" -->
-<!--              )) -->
-<!--       ) -->
+   output$brush <- renderPrint({
+    df <- values$df # store the data frame in an object
+    brushID <- brushedPoints(df,# the  data frame
+                             input$plot_brush, # the command for a reaction
+                          xvar = names(df)[colnames(df) == input$var1], # xvar of the graph
+                          yvar = names(df)[colnames(df) == input$var2], # yvar of the graph
+                             )
+    validate(
+      need(nrow(brushID) != 0, "Highlight Area") # Waiting message
+    )
+      brushID
+  })
 
-<!--     ) # display output -->
-<!--   ) -->
-<!-- ), -->
-
-<!-- server = function(input, output){ -->
-<!--   values <- reactiveValues() -->
-<!--   dataInput <- reactive({ -->
-<!--     if(input$dataset == 1){ -->
-<!--       data <- rock -->
-<!--     } else if (input$dataset == 2 ){ -->
-<!--       data <- pressure -->
-<!--     } else if (input$dataset == 3) { -->
-<!--       data <- mtcars -->
-<!--     } else if (input$dataset == 4) { -->
-<!--       data <- read.csv(input$example$datapath) -->
-<!--     } -->
-<!--   }) -->
-<!--   observeEvent(input$load, { -->
-<!--     values$data <- data.frame(dataInput()) -->
-<!--   }) -->
-<!--    shinyjs::onclick("imp_det", -->
-<!--                    shinyjs::toggle(id = "details_import", anim = TRUE)) -->
-<!--   observeEvent(input$load, { -->
-<!--     values$data <- data.frame(dataInput()) -->
-<!--   }) -->
-<!--   output$var1 <- renderUI({    # remember variable 1? here it is how we extract it -->
-<!--     nam <- colnames(values$data) # from the data set -->
-<!--     selectInput("var1", label = "Select x:", # create the input -->
-<!--                 choices = c(nam), multiple = F, -->
-<!--                 selected = nam[1]) -->
-<!--   }) -->
-
-<!--   output$var2 <- renderUI({ -->
-<!--     nam2 <- colnames(values$data) # create the input for variable 2 -->
-<!--     selectInput("var2", label = "Select y:", -->
-<!--                 choices = c(nam2), multiple = F, -->
-<!--                 selected = nam2[1]) -->
-<!--   }) -->
-
-<!--   newdata <- observeEvent(input$select, # use observe event so that the app will  -->
-<!--                           { # wait for you to decide before acting -->
-<!--                             # Besides, you're creating a new (smaller) object -->
-<!--                             values$df <- values$data[c(input$var1, input$var2)] -->
-<!--                           }) -->
-<!--   output$graph <- renderPlot({ -->
-<!--     validate( -->
-<!--       need(input$select > 0, "Waiting for data") # I changed the validation from -->
-<!--     )                                        # load to select -->
-<!--     df <- values$df # store the new object into an R object -->
-<!--     plot(df[, c(1:2)]) # use it normally -->
+},
 
 
-<!--   }) -->
-
-<!--   output$summary <- renderPrint({ -->
-<!--     validate( -->
-<!--       need(input$select > 0, "Waiting for data") -->
-<!--     )  -->
-<!--     df <- values$df # same  -->
-<!--     summary(df[, c(1:2)]) -->
-
-<!--   }) -->
-
-<!--   output$points <- renderPrint({ -->
-<!--     df <- values$df # store the dataframe in an object  -->
-<!--     pointID <- nearPoints(df, # the dataframe -->
-<!--                           input$plot_click, # the command for a reaction -->
-<!--                            xvar = names(df)[colnames(df) == input$var1], # xvar of the graph -->
-<!--                           yvar = names(df)[colnames(df) == input$var2], # yvar of the graph, -->
-<!--                           addDist = FALSE)  -->
-<!--     validate( -->
-<!--       need(nrow(pointID) != 0, "Click on a point") # Waiting message -->
-<!--     ) -->
-<!--     pointID -->
-<!--   }) -->
-
-<!--    output$brush <- renderPrint({ -->
-<!--     df <- values$df # store the dataframe in an object  -->
-<!--     brushID <- brushedPoints(df,# the  dataframe  -->
-<!--                              input$plot_brush, # the command for a reaction -->
-<!--                           xvar = names(df)[colnames(df) == input$var1], # xvar of the graph -->
-<!--                           yvar = names(df)[colnames(df) == input$var2], # yvar of the graph -->
-<!--                              ) -->
-<!--     validate( -->
-<!--       need(nrow(brushID) != 0, "Highlight Area") # Waiting message -->
-<!--     ) -->
-<!--       brushID -->
-<!--   }) -->
-
-<!-- }, -->
-
-
-<!--   options = list(height = 800) -->
-<!-- ) -->
-<!-- ``` -->
+  options = list(height = 800)
+)
+```
 
 ## Useful things
 

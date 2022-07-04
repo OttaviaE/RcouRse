@@ -1772,6 +1772,8 @@ ggplot(data, aes(y=z, x = fitted.values(model_bin))) +
 :::: 
 
 :::: column
+
+\centering
 \color{template} LM
 
 
@@ -1817,7 +1819,7 @@ quasi              logit, probit, cloglog, identity, inverse,
 # Simulations
 
 ## Random numbers generation
-
+\small
 Random numbers drawn from a statistical distribution $\rightarrow$ the distribution name (see `??Distributions` for an exhaustive list of distribution) prefixed by `r` (random)
 
 ```{r eval = FALSE}
@@ -1843,4 +1845,113 @@ rpois(4, 5)
 
 ## Bootstrap by resampling
 
+- Compute the sample statistics on multiple bootstrap samples $B$s drawn with replacement from the original data
+
+- Assess the variability of the statistics via the distribution of the bootstrap replicates (i.e., the statics computed on the bootstrap samples)
+
+**Bootstrap confidence intervals**
+
+Percentile intervals are the $1 - \alpha$ confidence intervals for the sample statistics with limits given by the quantiles of the bootstrap distribution 
+
+## In `R`
+
+\small
+
+```{r eval=TRUE}
+# example taken from Prof. Wickelmaier
+mouse <- data.frame(
+   grp = rep(c("trt", "ctl"), c(7, 9)),
+   surv = c(94, 197, 16, 38, 99, 141, 23, # trt
+            52, 104, 146, 10, 50, 31, 40, 27, 46) # ctl
+   )
+mean(mouse$surv[mouse$grp == "trt"]) #
+## Resampling
+sam1 <- numeric(1000) # 1000 bootstrap replicates
+for(i in seq_along(sam1)){
+ trt <- sample(mouse$surv[mouse$grp == "trt"], 7, replace=T)
+ sam1[i] <- mean(trt)
+}
+
+```
+
+##
+
+```{r echo=T}
+quantile(sam1, c(.025, .975))
+```
+
+
+```{r echo=FALSE, out.width="90%"}
+hist(sam1, breaks = 30, 
+     col="Pink", ylab = "Bootstrap distribution", 
+     xlab = "Bootstrap replicate", main = "", cex.lab =2)
+abline(v = mean(sam1), lwd=2)
+abline(v = quantile(sam1, c(.025, .975))[1], lwd=2, lty=2)
+abline(v = quantile(sam1, c(.025, .975))[2], lwd=2, lty=2)
+```
+
+
+## Parametric bootstrap
+
+For the likelihood ratio test: 
+
+- Fit a general ($M_1$) and a restricted model ($M_0$) to the original
+data $x$. Compute the original likelihood ratio s(x) between $M_1$
+and $M_0$
+
+- Simulate $B$ bootstrap samples  based on the stochastic
+part of the restricted model: These are observations for which
+$H_0$ is true
+
+- For each sample, fit $M_1$ and $M_0$ and compute the bootstrap
+replicate of the likelihood ratio between them
+
+- Assess the significance of the original likelihood ratio via the
+sampling distribution of bootstrap replicates
+
+## 
+
+```{r eval=FALSE}
+## Model fit to original data
+lm0 <- lm(surv ~ 1, mouse) # H0: no difference between gr
+lm1 <- lm(surv ~ grp, mouse) # H1: group effect
+anova(lm0, lm1) # original likelihood ratio
+```
+
+```{r echo=FALSE}
+## Model fit to original data
+lm0 <- lm(surv ~ 1, mouse) # H0: no difference between gr
+lm1 <- lm(surv ~ grp, mouse) # H1: group effect
+anova(lm0, lm1)$F[2]
+```
+
+```{r}
+## Parametric bootstrap
+sim1 <- numeric(1000)
+for(i in seq_along(sim1)){
+  surv0 <- simulate(lm0)$sim_1  # simulate from null model
+  m0 <- lm(surv0 ~ 1, mouse)    # fit null model
+  m1 <- lm(surv0 ~ grp, mouse)  # fit alternative model
+  sim1[i] <- anova(m0, m1)$F[2] # bootstrap likeli. ratio
+  }
+```
+
+
+## 
+
+The bootstrap $p-value$ is the proportion of
+bootstrap replicates that exceed the original likelihood ratio: 
+
+```{r echo=TRUE}
+mean(sim1 >
+anova(lm0, lm1)$F[2])
+```
+
+
+```{r echo=FALSE}
+hist(sim1, breaks =30, col="pink", xlim = c(0,10), 
+     xlab="Density of sampling distribution", 
+     ylab="Bootstrap likelihood test", cex.lab=2, main="")
+
+```
 
