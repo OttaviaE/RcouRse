@@ -2,7 +2,7 @@
 title: "Shine bright like an open source app"
 subtitle: "An introduction to shiny"
 author: "Ottavia Epifania"
-#runtime: shiny
+runtime: shiny
 output:  
       ioslides_presentation:
         highlight: kate
@@ -38,6 +38,7 @@ pre[class] {
   background-color: inherit;
 }
 ```
+
 
 
 ## Shiny app logic I {.build} 
@@ -1292,7 +1293,7 @@ server = function(input, output){
 library(shinyjs)
 shinyApp(
 
- ui = fluidPage(includeCSS("style.css"),
+ ui = fluidPage(
       useShinyjs(),  # Set up shinyjs
   sidebarLayout(
     sidebarPanel(style = "background-color: 		#e1e9f9;",
