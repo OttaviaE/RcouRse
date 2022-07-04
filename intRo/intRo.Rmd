@@ -81,11 +81,18 @@ library(knitr)
 
 ## Course material 
 
-```{r out.width="60%", fig.align='center', echo=FALSE}
+```{r out.width="40%", fig.align='center', echo=FALSE}
 knitr::include_graphics("img/qr-code.png")
 ```
 
-NB: This material is based on the lessons by Dr. Florian Wickelmaier
+NB: This material is based on the lessons by Prof. Florian Wickelmaier
+
+\small 
+Let's all set: 
+
+```{r}
+set.seed(999)
+```
 
 
 # Who aRe you?
@@ -1820,5 +1827,20 @@ rt(10, df = 20)             # draw 10 numbers from a
                             # t distr. with 20df
 ```
 
+
+Sampling (with or without replacement) from a vector:
+
+```{r}
+sample(1:5, size = 10, replace = T)
+```
+
+Make the simulations replicable by *seeding* them: 
+
+```{r eval=FALSE}
+set.seed(999)
+rpois(4, 5)
+```
+
+## Bootstrap by resampling
 
 
