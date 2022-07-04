@@ -15,6 +15,12 @@ library(shiny)
 
 ```
 
+<style>
+
+.myClass {font-size: 14px;}
+
+</style>
+
 
 ```{css echo=FALSE}
 pre {
@@ -108,12 +114,12 @@ ui <- fluidPage(
     sidebarPanel(
       selectInput(inputId = "dataset", # name of the input (for the server)
                   label = "Choose a dataset:", # name of the input (for the users)
-                  choices = c("rock", "pressure", "cars")) # options (for  both 
+                  choices = c("rock", "pressure", "cars")) # options (for  both
                                                           # users & server)
     ),
 
     mainPanel(
-      plotOutput( # define the graphical output (we're telling R that this output 
+      plotOutput( # define the graphical output (we're telling R that this output
         "graph"   # container must contain a plot)
       ))))
 
@@ -189,6 +195,104 @@ server = function(input, output){
   options = list(height = 800)
 )
 ```
+
+## To each its own: Input in UI
+
+```{r eval=FALSE, class.source="myClass"}
+sliderInput()     # Slider input widget
+numericInput()    # Numeric input control
+selectInput()     # Select list input control
+checkboxInput()   # Checkbox input control
+checkboxGroupInput()
+dateInput()       # Date input
+fileInput()       # File upload control
+radioButtons()    # Radio buttons
+textInput()       # Text input control
+passwordInput()   # Password input control
+actionButton()    # Action button
+dateInput()       # Date input
+dateRangeInput()  # Input a data range
+```
+
+[Complete list](https://shiny.rstudio.com/gallery/widget-gallery.html) (with code)
+
+
+```{r eval=FALSE, class.source="myClass"}
+selectInput("mySelection", label = h3("Select box"), 
+    choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3), 
+    selected = 1)
+```
+
+
+
+## To each its own: Output in UI
+
+```{r eval=FALSE}
+plotOutput()          # Plot output element
+textOutput()          # Text output element
+verbatimTextOutput()  # Verbatim text output element
+tableOutput()         # Table output element
+dataTableOutput()     # Data table output element
+htmlOutput()          # HTML output element
+uiOutput()            # user interface element
+downloadButton()      # Download button
+Progress()            # Reporting progress (object oriented)
+withProgress()        # Reporting progress (functional)
+outputOptions()       # Set options for an output object
+```
+
+Labels: 
+
+```{r eval = FALSE}
+verbatimTextOutput(
+  outputId = "myOutput"
+)
+```
+
+
+## To each its own: Output containers in server
+
+```{r, eval =FALSE}
+renderPlot()        # Plot output
+renderText()        # Text output
+renderPrint()       # Printable output
+renderTable()       # Table output
+renderDataTable()   # Data table output
+renderImage()       # Image file output
+renderUI()          # UI output
+downloadHandler()   # File downloads
+```
+
+```{r eval=FALSE}
+server = function(input, output) {
+  output$myOutput = renderText({
+    paste(paste("This is my choice"), input$mySelection)
+  })
+}
+```
+
+## App layout
+
+```{r eval=FALSE}
+fluidPage()   # rows with columns within 12-unit 
+              # wide grid
+
+fluidRow(      # custom the page in two columns
+  column(6, ), # of width 6 out of the 12-unit
+  column(6)    # on a singe row
+)    
+
+sidebarLayout(     # automatic layout with
+sidebarPanel(...), # sidebar and
+mainPanel(...)    # main area
+)
+
+# and many more!
+```
+
+[Complete list](https://shiny.rstudio.com/gallery/) (look for "Application layout")
+
+
 
 
 ## Don't repeat yourself, use the "shelf" solution
@@ -308,7 +412,7 @@ server = function(input, output){
 )
 ```
 
-## Which results in: 
+## Which results in:
 
 ```{r, echo = FALSE, eval = TRUE}
 shinyApp(
@@ -319,7 +423,7 @@ shinyApp(
       selectInput(inputId = "dataset",
                   label = "Choose a dataset:",
                   choices = c("rock", "pressure", "cars")),
-      # ACTION BUTTON 
+      # ACTION BUTTON
       actionButton("load", # label for the server
                    "Upload data") # label for the users
       ),
@@ -335,7 +439,7 @@ shinyApp(
 ),
 
 server = function(input, output){
-  values <- reactiveValues() 
+  values <- reactiveValues()
   dataInput <- reactive({
     if(input$dataset == "rock"){
       data <- rock
@@ -417,7 +521,7 @@ server = function(input, output){
 )
 ```
 
-## 
+##
 
 ```{r, echo = FALSE, eval= TRUE}
 shinyApp(
@@ -453,7 +557,7 @@ server = function(input, output){
       data <- cars
     }
   })
-  observeEvent(input$load, { # Use the observeEvent function to make the UI and 
+  observeEvent(input$load, { # Use the observeEvent function to make the UI and
     values$data <- data.frame(dataInput()) # server communicate again
   })
 
@@ -547,7 +651,7 @@ shinyApp(
                   label = "Choose a dataset:",
                   choices = c("rock", "pressure", "cars")),
 
-      actionButton("load", 
+      actionButton("load",
                    "Upload data")
       ),
     mainPanel(
@@ -577,7 +681,7 @@ server = function(input, output){
     })
 
   output$graph <- renderPlot({
-    validate( # validate function: I need something to be validated for letting 
+    validate( # validate function: I need something to be validated for letting
       need(input$load > 0, # you see what's hidden behind me
            "Waiting for data") # If it's not validated, I'll show you this message
     )
@@ -636,18 +740,18 @@ shinyApp(
 server = function(input, output){
     values <- reactiveValues()
   dataInput <- reactive({
-    if(input$dataset == 1){ # now we use the number associated with each dataset 
+    if(input$dataset == 1){ # now we use the number associated with each dataset
       data <- rock
     } else if (input$dataset == 2 ){
       data <- pressure
     } else if (input$dataset == 3) {
       data <- cars
     } else if (input$dataset == 4) {
-      data <- read.csv(input$example$datapath) # we call the input for the data 
+      data <- read.csv(input$example$datapath) # we call the input for the data
             #import by its label and we ask for the datapath selceted by the user
     }
   })
-  observeEvent(input$load, # we load the dataset (whatever it is only once the 
+  observeEvent(input$load, # we load the dataset (whatever it is only once the
                                        #  user has hit the button)
                {
     values$data <- data.frame(dataInput())
@@ -657,7 +761,7 @@ server = function(input, output){
     validate(
       need(input$load > 0, "Waiting for data")
     )
-    if (any(colnames(values$data) == "condition") ){ # I had to change the code 
+    if (any(colnames(values$data) == "condition") ){ # I had to change the code
       #just for the new dataset, which is differnet from all the others
       plot(values$data$tr ~ values$data$condition,
            xlab = "Condition", ylab = "TR")
@@ -683,7 +787,7 @@ server = function(input, output){
 )
 ```
 
-##
+## Let the users use their data
 
 ```{r echo = TRUE,eval=FALSE}
 shinyApp(
@@ -896,23 +1000,23 @@ shinyApp(
                                  "pressure" = 2,
                                  "cars" = 3,
                                  "I want to use my data!!" =4)),
-      
+
       conditionalPanel(
         condition = "input.dataset == '4'",
         fileInput("example",
                   "", accept = c("csv"))
-      ), 
-      actionButton("load", "Upload data"), # This is the button for uploading 
+      ),
+      actionButton("load", "Upload data"), # This is the button for uploading
                                             # the data
-      conditionalPanel(                    # It appears only when the data are 
+      conditionalPanel(                    # It appears only when the data are
         condition = "input.load >= '1'",   # loaded
         uiOutput("var1"),                 # contains the name for variable 1
         uiOutput("var2"),                 # contains the name for variable 2
-        actionButton("select", "Select & Display") # This is the button for 
+        actionButton("select", "Select & Display") # This is the button for
       ),                              # selecting the variables and actually see
                                       # something
     ),
-    
+
     mainPanel(
       plotOutput(
         "graph"
@@ -940,22 +1044,22 @@ server = function(input, output){
   observeEvent(input$load, {
     values$data <- data.frame(dataInput())
   })
-  
+
   output$var1 <- renderUI({    # remember variable 1? here it is how we extract it
     nam <- colnames(values$data) # from the data set
     selectInput("var1", label = "Select x:", # create the input
                 choices = c(nam), multiple = FALSE,
                 selected = nam[1])
   })
-  
+
   output$var2 <- renderUI({
     nam2 <- colnames(values$data) # create the input for variable 2
     selectInput("var2", label = "Select y:",
                 choices = c(nam2), multiple = FALSE,
                 selected = nam2[1])
   })
-  
-  newdata <- observeEvent(input$select, # use observe event so that the app will 
+
+  newdata <- observeEvent(input$select, # use observe event so that the app will
                           { # wait for you to decide before acting
                             # Besides, you're creating a new (smaller) object
                             values$df <- values$data[c(input$var1, input$var2)]
@@ -973,8 +1077,8 @@ server = function(input, output){
   output$summary <- renderPrint({
     validate(
       need(input$select > 0, "Waiting for data")
-    ) 
-    df <- values$df # same 
+    )
+    df <- values$df # same
     summary(df[, c(1:2)])
 
   })

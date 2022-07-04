@@ -5,7 +5,7 @@ author: "Ottavia M. Epifania"
 institute: "Univerisity of Padova (IT)"
 output: 
   beamer_presentation: 
-    theme: Metropolis
+    theme: metropolis
     colortheme: beaver
     fonttheme: serif
     highlight: haddock
@@ -41,6 +41,8 @@ header-includes:
              \tableofcontents[currentsection]
               \end{frame}
           }   
+    # - \setbeamertemplate{headline}{\begin{beamercolorbox}[ignorebg,ht=2.25ex,dp=3.75ex]{section in head/foot} \insertsectionnavigationhorizontal{\paperwidth}{}{\hfill\hfill} \end{beamercolorbox}
+#          }
 editor_options: 
   chunk_output_type: console
 ---
@@ -1658,14 +1660,12 @@ with(sleep,
 
 Statistical models are represented by formulae which are extremely close to the actual statistical notation: 
 
-
-<!-- \begin{tabular}{l l} -->
-<!-- \multicolumn{2}{l}{Formulae used in \texttt{lm()} and \texttt{glm()}.}\\ -->
-<!-- \texttt{y ~ 1 + x} & $y_i = \beta_0 + \beta_1 x_i + \varepsilon_i$ \\ -->
-<!-- \texttt{y ~ x} & (same but short)\\ -->
-<!-- \texttt{y ~ 0 + x} & $y_i = \beta_1 x_i + \varepsilon_i$ \\ -->
-<!-- \texttt{y ~ x_A * x_B} & $y_i = \beta_0 + \beta_1 x_i + \beta_2 x_j + (\beta_1 \beta_2)x_{ij}  + \varepsilon_{ij}$ \\ -->
-<!-- \end{tabular} -->
+| in `R`               | Model                                                                                           |
+|----------------------|-------------------------------------------------------------------------------------------------|
+| `y ~ 1 + x`          |  $y_i   = \beta_0 + \beta_1 x_i + \varepsilon_i$                                                |
+| `y ~ x`              |  (same but short)                                                                               |
+| `y ~ 0 + x`          |  $y_i = \beta_1 x_i +   \varepsilon_i$                                                          |
+| `y ~ x_A * x_B`      |  $y_i = \beta_0 + \beta_1 x_i +   \beta_2 x_j + (\beta_1 \beta_2)x_{ij}    + \varepsilon_{ij}$  |
 
 ## Linear models 
 
@@ -1718,23 +1718,106 @@ A GLM is composed of three elements: The response distribution, the link functio
 In `R`:
 
 ```{r eval=FALSE}
-glm(y ~ x1 + x2 + ... + xk, family(link), 
-    data)
+glm(y ~ x1 + x2 + ... + xk, family(link), data)
 ```
+
+## LM vs GLM
+
+::: columns
+
+:::: column
+
+\centering
+
+\color{template} GLM
+
+
+
+```{r echo = FALSE, warning=FALSE, out.width="90%"}
+samples <- 500
+r <- 0.50
+r_neg <- -0.95
+library('MASS')
+data <- data.frame(mvrnorm(n=samples, 
+                           mu=c(1, 1), 
+                           Sigma=matrix(c(1, r, r, 1), nrow=2), empirical=TRUE))
+colnames(data) <- c("x", "y")
+data$z <- ifelse(data$y < 1, 0, 1)
+model_bin <- glm(z ~x, data = data, family = "binomial")
+model = lm(y ~ x, data = data)
+
+ggplot(data, aes(y=z, x = fitted.values(model_bin))) + 
+  geom_point(size = 3, alpha = 0.6)  +
+  geom_smooth(method="glm", 
+              method.args=list(family="binomial"), 
+              color = "royalblue", 
+              se=TRUE, fill = "lightblue") + 
+  ylab(expression(paste("P"))) + 
+  xlab(expression(paste("Linear combination of predictors"))) + 
+  theme_minimal() +
+  theme(axis.ticks.y = element_blank(), 
+        axis.title.x = element_text(size = 26), 
+        axis.title.y = element_text(size = 26), 
+        axis.text = element_text(size = 22), 
+        panel.border = element_blank()) 
+
+```
+:::: 
+
+:::: column
+\color{template} LM
+
+
+```{r echo = FALSE, warning=FALSE, out.width="90%"}
+ggplot(data, aes(y=y, x = fitted.values(model))) + 
+  geom_point(size = 3, alpha = 0.6)  +
+  geom_smooth(method="lm",  
+              color = "royalblue", 
+              se=TRUE, fill = "lightblue") + 
+  ylab("y") + 
+  xlab("x") + 
+  theme_minimal() +
+  theme(axis.ticks.y = element_blank(), 
+        axis.title = element_text(size = 26,  face="italic"), 
+        axis.text = element_text(size = 22), 
+        panel.border = element_blank()) 
+```
+
+::::
+
+:::
+
+
+
+
 
 ## Families 
 
 A special link function to each response variable. In `R` some different link functions are available by default:
 
 ```{r eval = FALSE}
-## Family name Link functions
-binomial logit, probit, log, cloglog
-gaussian identity, log, inverse
-Gamma identity, inverse, log
-inverse.gaussian 1/mu^2, identity, inverse, log
-poisson log, identity, sqrt
-quasi logit, probit, cloglog, identity,
-inverse, log, 1/mu^2, sqrt
+## Family name     Link functions
+binomial           logit, probit, log, cloglog
+gaussian           identity, log, inverse
+Gamma              identity, inverse, log
+inverse.gaussian   1/mu^2, identity, inverse, log
+poisson            log, identity, sqrt
+quasi              logit, probit, cloglog, identity, inverse, 
+                   log, 1/mu^2, sqrt
+```
+
+
+# Simulations
+
+## Random numbers generation
+
+Random numbers drawn from a statistical distribution $\rightarrow$ the distribution name (see `??Distributions` for an exhaustive list of distribution) prefixed by `r` (random)
+
+```{r eval = FALSE}
+rnorm(10, mean = 0, sd = 1) # draw 10 numbers from a 
+                            # normal distr. 
+rt(10, df = 20)             # draw 10 numbers from a 
+                            # t distr. with 20df
 ```
 
 

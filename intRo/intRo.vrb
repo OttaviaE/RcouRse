@@ -1,25 +1,14 @@
-\frametitle{Execersizes}
-\protect\hypertarget{execersizes}{}
-\begin{itemize}
-\item
-  Open a new \texttt{R} script
-\item
-  Create one vector for each type (\texttt{int}, \texttt{num},
-  \texttt{chr}, \texttt{logi}, \texttt{factor}) and assign each of them
-  to an object
-\item
-  Compute the mean of the \texttt{int} and \texttt{num} vectors
-\item
-  Standardize the values of the \texttt{int} and \texttt{num} vectors
-  and store them in two new objects:
-\end{itemize}
+\frametitle{Random numbers generation}
+\protect\hypertarget{random-numbers-generation}{}
+Random numbers drawn from a statistical distribution \(\rightarrow\) the
+distribution name (see \texttt{??Distributions} for an exhaustive list
+of distribution) prefixed by \texttt{r} (random)
 
-\[ z = \frac{x_i - \bar{X}}{sd}\]
-
-\begin{itemize}
-\item
-  Create a new vector by combining together the \texttt{logi} and
-  \texttt{int} vectors
-\item
-  Add the \texttt{logi} vector to the \texttt{num} vector
-\end{itemize}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{rnorm}\NormalTok{(}\DecValTok{10}\NormalTok{, }\AttributeTok{mean =} \DecValTok{0}\NormalTok{, }\AttributeTok{sd =} \DecValTok{1}\NormalTok{) }\CommentTok{\# draw 10 numbers from a }
+                            \CommentTok{\# normal distr. }
+\FunctionTok{rt}\NormalTok{(}\DecValTok{10}\NormalTok{, }\AttributeTok{df =} \DecValTok{20}\NormalTok{)             }\CommentTok{\# draw 10 numbers from a }
+                            \CommentTok{\# t distr. with 20df}
+\end{Highlighting}
+\end{Shaded}
