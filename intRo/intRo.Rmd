@@ -120,7 +120,7 @@ exp(3)  # exponential
 Use brackets as you would do in a normal equation:
 
 ```{r eval = FALSE}
-(3 * 2)/ sqrt(25 + 4) # Lokk at me!
+(3 * 2)/ sqrt(25 + 4) # Look at me!
 ```
 
 `R` ignores everything after # (it's a comment)
@@ -145,7 +145,7 @@ The elements on the right are assigned to the object on the left
 knitr::include_graphics("img/meme.jpg")
 ```
 
-Valid variable names are letters, numbers, dots, underscores (e. g.,
+Valid variable names are letters, numbers, dots, underscores (e.g.,
 `variable_name`)
 
 Variable names cannot start with numbers
@@ -264,7 +264,7 @@ Almost everything in `R` is done with functions, consisting of:
 mean(1:5, trim = 0, na.rm = TRUE)
 ```
 Arguments may be set to default values; what they are is
-documented in `?mean` 
+documented in `?mean()` 
 
 ## Functions and arguments (pt. II)
 
@@ -274,7 +274,10 @@ Arguments can be passed
 
 - with name (in arbitrary order) $\rightarrow$ *keyword matching*
 
-    mean(x, trim = 0.3, na.rm = TRUE)
+```{r eval=FALSE}
+mean(x, trim = 0.3, na.rm = TRUE)
+```
+
 
 No arguments? No problems, just brackets: 
     
@@ -387,7 +390,7 @@ Sequences:
 ```{r}
 -5:5 # vector of 11 numbers from -5 to 5
 
-seq(-2.5, 2.5, by = 0.5) # sequence in steps of 0.5 from -2.5 to 2.5
+seq(-2.5, 2.5, by = 0.5) # sequence in steps of 0.5 
 ```
 
 Repeating elements: 
@@ -932,7 +935,7 @@ Don't loop, `apply()`!
 `apply()`
 
 
-```{r eval = F, tidy=FALSE}
+```{r eval = T, tidy=FALSE}
 X <- matrix(rnorm(20),
             nrow = 5, ncol = 4)
 apply(X, 2, max) # maximum for each column
@@ -1539,7 +1542,7 @@ Metric response variable:
 
 *p*-value: 
 
->conditional probability of obtaining a test stastic that is at least as extreme as the one observed, given that the null hyphothesis is
+>conditional probability of obtaining a test stastic that is at least as extreme as the one observed, given that the null hyphothesis is true
 
 If $p < \alpha$ (i.e., the probability of rejecting the null hypothesis when it is true) $\rightarrow$ the null hypothesis is rejected
 
@@ -1589,7 +1592,7 @@ Hypothesis:
 
 Test statistic: 
 
-$$\chi^2 = \displaystyle \sum_{i=1}^{n}\frac{(x_{ij} - \hat{x}_{ij})^2}{\hat{x}_{ij}}, \, \, \chi^2 \sim \chi^2(r-1)$$
+$$\chi^2 = \displaystyle \sum_{i=1}^{n}\frac{(x_{ij} - \hat{x}_{ij})^2}{\hat{x}_{ij}}, \, \, \chi^2 \sim \chi^2(r-1)(c-1)$$
 
 In `R`: 
 
@@ -1911,22 +1914,20 @@ sampling distribution of bootstrap replicates
 
 ## 
 
-```{r eval=FALSE}
+```{r results='hide'}
 ## Model fit to original data
-lm0 <- lm(surv ~ 1, mouse) # H0: no difference between gr
+lm0 <- lm(surv ~ 1, mouse)  # H0: no difference between gr
 lm1 <- lm(surv ~ grp, mouse) # H1: group effect
-anova(lm0, lm1) # original likelihood ratio
+anova(lm0, lm1)             # original likelihood ratio
 ```
 
 ```{r echo=FALSE}
-## Model fit to original data
-lm0 <- lm(surv ~ 1, mouse) # H0: no difference between gr
-lm1 <- lm(surv ~ grp, mouse) # H1: group effect
-anova(lm0, lm1)$F[2]
+anova(lm0, lm1)$F[2] 
 ```
 
+
 ```{r}
-## Parametric bootstrap
+ ## Parametric bootstrap
 sim1 <- numeric(1000)
 for(i in seq_along(sim1)){
   surv0 <- simulate(lm0)$sim_1  # simulate from null model
