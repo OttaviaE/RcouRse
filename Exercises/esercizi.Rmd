@@ -556,3 +556,49 @@ server = function(input, output) {
 shinyApp(ui, server)
   
 ```
+</details>
+
+3. Create a 5th option with a text box that appears only if the 5-option (i.e., "Another show") is selected: 
+
+<details><summary>See solution</summary>
+```{r eval=FALSE}
+
+ui = fluidPage(
+  title = "What is your favorite series?", 
+  radioButtons("the_choice", "Make your choice!", 
+               choices = list("Squid game" = "Squid game",
+                              "Black mirror" = "Black mirror", 
+                              "The office" = "The office", 
+                              "Modern family" = "Modern family", 
+                              "Another show" = 5)),
+  conditionalPanel(
+        condition = "input.the_choice == '5'", 
+  textInput("my_show", label = "My favorite show", value = "")),
+  
+  fluidRow(column(4, 
+                 actionButton("go", "Show my choice!" ) ), 
+           column(4, 
+                   verbatimTextOutput("choice") ))
+
+)
+  
+server = function(input, output) {
+  
+  choice <- eventReactive(input$go, {
+    if (input$the_choice == 5) {
+       cat("You choose:", input$my_show )
+    } else {
+       cat("You choose:", input$the_choice )
+    }
+  })
+
+  output$choice = renderPrint({
+    choice()
+  })
+}
+
+shinyApp(ui, server)
+  
+```
+</details>
+

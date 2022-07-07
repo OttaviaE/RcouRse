@@ -1601,7 +1601,7 @@ See solution
 <pre class="r"><code>v = rep(c(&quot;on&quot;, &quot;off&quot;), c(5, 2))</code></pre>
 </details>
 <ol start="5" style="list-style-type: decimal">
-<li>Create this vector C1, A1, D 1, A, B, B2, C2, A2, D 2, B1</li>
+<li>Create this vector C1, A, C2, A2, A1, B1, B2, D 2, B, D 1</li>
 </ol>
 <details>
 <summary>
@@ -2048,6 +2048,50 @@ server = function(input, output) {
 }
 
 shinyApp(ui, server)</code></pre>
+</details>
+<ol start="3" style="list-style-type: decimal">
+<li>Create a 5th option with a text box that appears only if the 5-option (i.e., “Another show”) is selected:</li>
+</ol>
+<details>
+<summary>
+See solution
+</summary>
+<pre class="r"><code>ui = fluidPage(
+  title = &quot;What is your favorite series?&quot;, 
+  radioButtons(&quot;the_choice&quot;, &quot;Make your choice!&quot;, 
+               choices = list(&quot;Squid game&quot; = &quot;Squid game&quot;,
+                              &quot;Black mirror&quot; = &quot;Black mirror&quot;, 
+                              &quot;The office&quot; = &quot;The office&quot;, 
+                              &quot;Modern family&quot; = &quot;Modern family&quot;, 
+                              &quot;Another show&quot; = 5)),
+  conditionalPanel(
+        condition = &quot;input.the_choice == &#39;5&#39;&quot;, 
+  textInput(&quot;my_show&quot;, label = &quot;My favorite show&quot;, value = &quot;&quot;)),
+  
+  fluidRow(column(4, 
+                 actionButton(&quot;go&quot;, &quot;Show my choice!&quot; ) ), 
+           column(4, 
+                   verbatimTextOutput(&quot;choice&quot;) ))
+
+)
+  
+server = function(input, output) {
+  
+  choice &lt;- eventReactive(input$go, {
+    if (input$the_choice == 5) {
+       cat(&quot;You choose:&quot;, input$my_show )
+    } else {
+       cat(&quot;You choose:&quot;, input$the_choice )
+    }
+  })
+
+  output$choice = renderPrint({
+    choice()
+  })
+}
+
+shinyApp(ui, server)</code></pre>
+</details>
 </div>
 
 
