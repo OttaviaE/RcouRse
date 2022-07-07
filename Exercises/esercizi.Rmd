@@ -282,5 +282,277 @@ ggplot(dat, aes(x = light, y=growth, color=group)) + geom_violin(trim = F)
 
 Go wild with the plot options! Play with them `r emoji("smiley")`
 
+# Programming 
 
-- https://www.r-exercises.com/
+## Data manipulation
+
+1. Create a new column (`foo`) in `dat` following these guidelines: 
+  
+  - `growth` $\leq$ first quartile of `growth`: "A"
+  -  first quartile of `growth` $<$ `growth` $\leq$ third quartile of `growth`: "B"
+  -  `growth` $>$ third quartile of `growth`: "A"
+  
+(hint: use the `quantile()` function)
+
+The solution can be obtained with 2 different codes. Do them both
+
+<details><summary>See solution A</summary>
+```{r}
+
+growth_q = quantile(dat$growth)
+
+dat$foo = with(dat, 
+               ifelse(growth <= growth_q[2], "A", 
+                      ifelse(growth > growth_q[2] & growth <= growth_q[4], 
+                             "B", 
+                             "C")))
+
+```
+</details>
+
+<details><summary>See solution B</summary>
+```{r}
+
+growth_q = quantile(dat$growth)
+
+dat$bar = character(nrow(dat))
+
+for (i in 1:nrow(dat)) {
+  if (dat[i, "growth"] <= growth_q[2]) {
+    dat[i, "bar"] = "A"
+  } else if (dat[i, "growth"] > growth_q[2] & dat[i, "growth"] <= growth_q[4]) {
+    dat[i, "bar"] = "B"
+  } else {
+    dat[i, "bar"] = "C"
+  }
+}
+
+```
+</details>
+
+
+2. Create this data set: 
+
+```{r}
+data = data.frame(id = paste0("s", 1:100), 
+                  condition = c(rep(c("A", "B", "C", "D"), each=25)), 
+                  group = c(rep(c("treatment", "control"), each=50)), 
+                  sex = c(rep(c("male", "female"), each=50)), 
+                  rt = rgamma(100, shape=3))
+```
+
+Write the code for transforming all the columns identified as characters in factors. 
+Two solutions are possible, write them both. 
+
+
+<details><summary>See solution A</summary>
+```{r}
+
+if (any(sapply(data, is.character)) == TRUE) {
+  data[, sapply(data, is.character) == T] = lapply(data[, sapply(data, is.character) == T], 
+                                                 as.factor)
+} else {
+  data = data
+}
+
+```
+</details>
+
+<details><summary>See solution B</summary>
+```{r}
+
+for (i in 1:ncol(data)) {
+  if (is.character(data[,i]) == TRUE) {
+    data[, i] = as.factor(data[ ,i])
+  } else {
+    data[ ,i] = data[ ,i]
+  }
+}
+
+```
+</details>
+
+## Functions
+
+3. Write a function `my_mean()` to compute the mean of a vector without using the `mean()` function (use the `mean()` function just to check whether you did it right)
+
+<details><summary>See solution</summary>
+```{r}
+
+my_mean = function(data) {
+  m = sum(data)/length(data)
+  return(m)
+}
+
+
+```
+</details>
+
+4. Add a check step: If it is not an integer or a numeric vector, throws an error "STOP! I need integer or numeric vectors!"
+
+<details><summary>See solution</summary>
+```{r}
+
+my_mean = function(data) {
+  if (is.integer(data) | is.numeric(data) == FALSE) {
+    stop("STOP! I need integer or numeric vectors!")
+  } else {
+      m = sum(data)/length(data)
+  }
+    return(m)
+}
+
+```
+
+</details>
+
+5. Define a print method `print.mean()` for `my_mean()` that says "The mean of your vector is:"
+
+<details><summary>See solution</summary>
+```{r}
+
+print.mean = function(object) {
+  cat("The mean of your vector is:", object)
+  invisible(object)
+}
+```
+</details>
+
+6. `print.mean()` only print objects of class "my.mean", otherwise it throws the error "Sorry, I print only objects of class my.mean"
+
+<details><summary>See solution</summary>
+```{r}
+my_mean = function(data) {
+  if (is.integer(data) | is.numeric(data) == FALSE) {
+    stop("STOP! I need integer or numeric vectors!")
+  } else {
+      m = sum(data)/length(data)
+      class(m) = "my.mean"
+  }
+    return(m)
+}
+
+print.mean = function(object) {
+  if ((class(object) != "my.mean") == T) {
+    stop("Sorry, I print only objects of class my.mean")
+  } else {
+      cat("The mean of your vector is:", object)
+  invisible(object)
+  }
+}
+```
+</details>
+
+7. Write a function that computes the factorial of a number $n! = (n-1) \times (n-2) \times \ldots 1$ (Two solutions are possible, check with function `factorial()`): 
+
+<details><summary>See solution A</summary>
+```{r}
+
+my_factorial = function(number) {
+  fact = 1 
+  for( i in 1:number) {
+  fact = fact * i
+}
+return(fact)
+}
+
+```
+</details>
+
+<details><summary>See solution B</summary>
+```{r}
+
+my_factorial = function(number) {
+  fact = number * (number - 1)
+  for (i in 2:(number-1)) {
+  fact =  fact * (number-i)
+  }
+  return(fact)
+}
+```
+</details>
+
+
+# Shiny 
+
+Shiny set up: 
+
+```{r eval=FALSE}
+install.packages("shiny")
+library(shiny)
+
+ui = fluidPage(
+  [....]
+)
+
+server = function(input, output) {
+  [....]
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+1. Using the template above, create a shiny app with Radio buttons with 4 choices (make them 4 Netflix series). The output is: "You choose X" (where x is the actual input). 
+
+
+<details><summary>See solution</summary>
+```{r eval=FALSE}
+
+ui = fluidPage(
+  title = "What is your favorite series?", 
+  radioButtons("the_choice", "Make your choice!", 
+               choices = list("Squid game" = "Squid game",
+                              "Black mirror" = "Black mirror", 
+                              "The office" = "The office", 
+                              "Modern family" = "Modern family")), 
+  fluidRow(column(4, 
+                   verbatimTextOutput("choice") ))
+
+)
+  
+server = function(input, output) {
+  output$choice = renderPrint({
+    cat("You choose:", input$the_choice)
+  })
+}
+
+shinyApp(ui, server)
+  
+```
+</details>
+
+2. Use an action button "Show my choice!" to see the results (Hint: see the examples for `eventReactive()`)
+
+<details><summary>See solution</summary>
+```{r eval=FALSE}
+
+ui = fluidPage(
+  title = "What is your favorite series?", 
+  radioButtons("the_choice", "Make your choice!", 
+               choices = list("Squid game" = "Squid game",
+                              "Black mirror" = "Black mirror", 
+                              "The office" = "The office", 
+                              "Modern family" = "Modern family")), 
+  
+  fluidRow(column(4, 
+                 actionButton("go", "Show my choice!" ) ), 
+           column(4, 
+                   verbatimTextOutput("choice") ))
+
+)
+  
+server = function(input, output) {
+  
+  choice <- eventReactive(input$go, {
+    cat("You choose:", input$the_choice )
+  })
+
+  output$choice = renderPrint({
+    choice()
+  })
+}
+
+shinyApp(ui, server)
+  
+```
