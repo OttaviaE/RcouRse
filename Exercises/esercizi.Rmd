@@ -1,0 +1,286 @@
+---
+title: "Esercizi"
+output: 
+    bookdown::html_document2:
+        toc: true
+        toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(emoji)
+```
+
+# Baby steps
+
+## Calculato`R`
+
+Write the following operations (results are in square brackets):
+
+1. $\sqrt{(15)} * 14 - \frac{22}{4}$ [48.72177]
+
+<details><summary>See solution</summary>
+```{r}
+sqrt(15) *14 - 22/4
+```
+
+</details>
+
+2. $\frac{\sqrt{7-\pi}}{3\ (45-34)}$ [0.05952372]
+
+<details><summary>See solution</summary>
+```{r}
+sqrt(7 - pi)/(3*(45 -34))
+```
+
+</details>
+
+3. $\frac{e^{(5-4)}}{1+e^{(5-4)}}$ [0.7310586]
+
+<details><summary>See solution</summary>
+```{r}
+exp(5-4)/(1+exp(5-4))
+```
+
+</details>
+
+4. $log(\frac{0.7}{1-0.5})* \sqrt{(\frac{20\times 3}{2})^5}$ [8.839466]
+
+<details><summary>See solution</summary>
+```{r}
+log(0.7/(1-0.5) * sqrt(((20 *3)/2)^5))
+```
+
+</details>
+
+5. $\frac{\sum_{n=1}^{10} n}{10}$ [5.5]
+
+<details><summary>See solution</summary>
+```{r}
+sum(1:10)/10
+```
+
+</details>
+
+Details:
+
+- Square root: `sqrt()`
+- $e$: `exp(1)`.
+- $log$: `log(x, base=a)`
+
+## Vectors
+
+1. Create a vector $x$ of length 7 with only odd numbers
+
+<details><summary>See solution</summary>
+```{r}
+x = seq(1, 13, by=2)
+```
+
+</details>
+
+2. Create a vector $y$ from $x$ such that it includes the values $\leq 3$ and those $\geq 9$: 
+
+<details><summary>See solution</summary>
+```{r}
+y = x[x <= 3|x >=9] 
+```
+</details>
+
+3. Create vector $z$ as from $y$ such that it includes the values $<$ `mean(y)`
+
+<details><summary>See solution</summary>
+```{r}
+z = y[y < mean(y)] 
+```
+</details>
+
+```{r echo=FALSE}
+v = rep(c("on", "off"), c(5, 2))
+```
+
+
+4. Create this vector: `r v`: 
+
+
+<details><summary>See solution</summary>
+```{r}
+v = rep(c("on", "off"), c(5, 2))
+```
+</details>
+
+```{r echo = FALSE}
+h = c(paste0("A", 1:2), paste0("B", 1:2), paste0("C", 1:2), 
+      paste("D", 1:2), LETTERS[1:2])
+h = sample(h)
+```
+
+
+5. Create this vector `r h`
+
+<details><summary>See solution</summary>
+```{r}
+h = c(paste0("A", 1:2), paste0("B", 1:2), paste0("C", 1:2), 
+      paste0("D", 1:2), LETTERS[1:2])
+```
+</details>
+
+
+6. From vector $h$, select only the elements containing number 1 and store them in $g$: 
+
+<details><summary>See solution</summary>
+```{r}
+g = h[grepl("[1]", h)]
+g
+```
+</details>
+
+
+7. Replace all elements in $h$ that contains A or B and a number with "!"
+
+<details><summary>See solution</summary>
+```{r}
+gsub("[AB]+[0-9]", "!", h)
+```
+</details>
+
+## Data frames
+
+1. Create a data frame with 60 subjects and three factor variables:
+
+ - `id`: Subjects ids from 1 to 60 (factor) 
+ - `light`: Subjects' light, with levels "male", "medium", "low" (factor, mind the order)
+ - `group`: "treatment" vs. "control" (factor, mind the order)
+
+
+light and group are crossed factors in a balanced design, so there are 10 subjects
+in each cell. Check the structure of the data set
+
+<details><summary>See solution</summary>
+```{r}
+dat = data.frame(id = paste0("sbj", 1:60), 
+                 light = factor(rep(c("low", "medium", "high"), each=10), 
+                              levels = c("high", "medium", "low")), 
+                 group = factor(rep(c("control", "treatment"), each=30), 
+                 levels = c("treatment", "control")))
+# check 
+table(dat$light, dat$group)
+```
+</details>
+
+2. Add column "growth" to "dat" with response times drawn from a gamma distribution (use `set.seed(999)`, and set `shape = 1` in the function for generating the data)
+
+<details><summary>See solution</summary>
+```{r}
+set.seed(999)
+dat$growth = rgamma(60, shape=1)
+```
+</details>
+
+3. Order the data frame by decreasing response times: 
+
+<details><summary>See solution</summary>
+```{r}
+dat = dat[order(dat$growth, decreasing = T), ]
+
+```
+</details>
+
+
+4. Compute the mean and standard deviation of `tr` considering `light * group`. Save the results in two objects (mean_growth and sd_growth)
+
+<details><summary>See solution</summary>
+```{r}
+mean_growth = aggregate(growth ~ light * group, data = dat, mean)
+sd_growth = aggregate(growth ~ light * group, data = dat, sd)
+```
+</details>
+
+5. Rename the last column of mean_growth and sd_growth in "m_growth" and "sd_growth", respectively, **without using manual indexing** (e.g., `colnames(mean_growth)[3]`)>  
+
+<details><summary>See solution</summary>
+```{r}
+# indexing the position
+colnames(mean_growth)[ncol(mean_growth)] = "m_growth"
+
+# explicitly referring to the name of the column
+names(sd_growth)[colnames(sd_growth) == "growth"] ="sd_growth"
+
+```
+</details>
+
+6. Merge mean_growth and `sd_growth` in `summary_dat` and order it by group: 
+
+<details><summary>See solution</summary>
+```{r}
+summary_dat = merge(mean_growth, sd_growth, 
+                    by = c("light", "group"))
+
+summary_dat = summary_dat[order(summary_dat$group),]
+summary_dat
+```
+</details>
+
+
+## Plots
+
+### Base plots
+
+1. Pairwise plot of dat: 
+
+<details><summary>See solution</summary>
+```{r}
+plot(dat)
+```
+</details>
+
+2. Plot growth according to group
+
+<details><summary>See solution</summary>
+```{r}
+plot(dat$growth ~ dat$group)
+
+```
+</details>
+
+3. Plot growth according to light
+
+<details><summary>See solution</summary>
+```{r}
+plot(dat$growth ~ dat$light)
+
+```
+</details>
+
+### ggplot
+
+1. Violin plot of growth according to light (hint: use `geom_violin(trim=F)`: 
+
+<details><summary>See solution</summary>
+```{r}
+library(ggplot2)
+
+ggplot(dat, aes(x = light, y=growth)) + geom_violin(trim = F)
+
+```
+</details>
+
+2. Violin plot of growth according to light and group: 
+
+<details><summary>See solution</summary>
+```{r}
+library(ggplot2)
+
+ggplot(dat, aes(x = light, y=growth, fill=group)) + geom_violin(trim = F)
+
+# also
+
+ggplot(dat, aes(x = light, y=growth, color=group)) + geom_violin(trim = F)
+
+```
+</details>
+
+Go wild with the plot options! Play with them `r emoji("smiley")`
+
+
+- https://www.r-exercises.com/
