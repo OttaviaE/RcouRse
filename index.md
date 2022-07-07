@@ -18,6 +18,11 @@ This course aims at giving a brief yet comprehensive introduction to the use of 
 - IntRoduction: Using `R` for data analysis and programming [PDF](intRo/intRo.pdf)
 - Shine bright like an open source app: Basics on how to program in `shiny` for developing interactive web applications ([download Rmd](shiny/shiny.Rmd))  (Unfortunately, it is not possible to embed the interactive shiny apps in the HTML file. Nonetheless, [here](shiny/shiny.html) you can find the HTML slide, without the interactive apps)
 
+### Practice
+
+- [Basic `R` exercises](Exercises/esercizi.html)
+- Want more? Check this out [https://www.r-exercises.com/](https://www.r-exercises.com/)
+
 ## Further readings
 
 - [Shiny Gallery](https://shiny.rstudio.com/gallery/): You can find a gallery of different apps developed and deployed with `shiny`
