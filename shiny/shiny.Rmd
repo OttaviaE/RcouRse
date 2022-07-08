@@ -1227,7 +1227,7 @@ server = function(input, output){
     } else if (input$dataset == 2 ){
       data <- pressure
     } else if (input$dataset == 3) {
-      data <- mtcars
+      data <- cars
     } else if (input$dataset == 4) {
       data <- read.csv(input$example$datapath)
     }
@@ -1390,12 +1390,12 @@ server = function(input, output){
     } else if (input$dataset == 2 ){
       data <- pressure
     } else if (input$dataset == 3) {
-      data <- mtcars
+      data <- cars
     } else if (input$dataset == 4) {
       data <- read.csv(input$example$datapath)
     }
   })
-   observeEvent(input$load, {
+     observeEvent(input$load, {
     values$data <- data.frame(dataInput())
     # check the characters
     if (any(sapply(values$data, is.character)) == TRUE) {
@@ -1429,7 +1429,8 @@ server = function(input, output){
     validate(
       need(input$select > 0, "Waiting for data") 
     )                                        # load to select
-    df <- values$df # store the new object into an R object
+  
+    df = values$df
     plot(df[, c(1:2)]) # use it normally
 
 
