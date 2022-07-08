@@ -14,7 +14,7 @@ library(emoji)
 
 # Baby steps
 
-## Calculato`R`
+## Calculato**R**
 
 Write the following operations (results are in square brackets):
 
@@ -68,10 +68,11 @@ Details:
 - Square root: `sqrt()`
 - $e$: `exp(1)`.
 - $log$: `log(x, base=a)`
+- $\pi$: `pi`
 
 ## Vectors
 
-1. Create a vector $x$ of length 7 with only odd numbers
+1. Create a vector `x` of length 7 containing only odd numbers
 
 <details><summary>See solution</summary>
 ```{r}
@@ -80,7 +81,7 @@ x = seq(1, 13, by=2)
 
 </details>
 
-2. Create a vector $y$ from $x$ such that it includes the values $\leq 3$ and those $\geq 9$: 
+2. Create a vector `y` from `x` such that it includes the values $\leq 3$ and those $\geq 9$: 
 
 <details><summary>See solution</summary>
 ```{r}
@@ -88,7 +89,7 @@ y = x[x <= 3|x >=9]
 ```
 </details>
 
-3. Create vector $z$ as from $y$ such that it includes the values $<$ `mean(y)`
+3. Create vector `z` from `y` such that it includes the values $<$ $M(y)$:
 
 <details><summary>See solution</summary>
 ```{r}
@@ -101,7 +102,7 @@ v = rep(c("on", "off"), c(5, 2))
 ```
 
 
-4. Create this vector: `r v`: 
+4. Create this vector: `r v` and name it `v`: 
 
 
 <details><summary>See solution</summary>
@@ -113,11 +114,10 @@ v = rep(c("on", "off"), c(5, 2))
 ```{r echo = FALSE}
 h = c(paste0("A", 1:2), paste0("B", 1:2), paste0("C", 1:2), 
       paste("D", 1:2), LETTERS[1:2])
-h = sample(h)
 ```
 
 
-5. Create this vector `r h`
+5. Create this vector `r h` and name it `h`:
 
 <details><summary>See solution</summary>
 ```{r}
@@ -127,7 +127,7 @@ h = c(paste0("A", 1:2), paste0("B", 1:2), paste0("C", 1:2),
 </details>
 
 
-6. From vector $h$, select only the elements containing number 1 and store them in $g$: 
+6. From vector `h`, select only the elements containing number 1 and store them in vector `g`: 
 
 <details><summary>See solution</summary>
 ```{r}
@@ -137,7 +137,7 @@ g
 </details>
 
 
-7. Replace all elements in $h$ that contains A or B and a number with "!"
+7. Replace all elements in `h` that contains A or B and a number with "!":
 
 <details><summary>See solution</summary>
 ```{r}
@@ -147,15 +147,15 @@ gsub("[AB]+[0-9]", "!", h)
 
 ## Data frames
 
-1. Create a data frame with 60 subjects and three factor variables:
+1. Create a data frame with 60 subjects and two factor variables:
 
  - `id`: Subjects ids from 1 to 60 (factor) 
- - `light`: Subjects' light, with levels "male", "medium", "low" (factor, mind the order)
- - `group`: "treatment" vs. "control" (factor, mind the order)
+ - `light`: Subjects' light, with levels `male`, `medium`, `low` (factor, mind the order)
+ - `group`: `treatment` vs. `control` (factor, mind the order)
 
 
-light and group are crossed factors in a balanced design, so there are 10 subjects
-in each cell. Check the structure of the data set
+`light` and `group` are crossed factors in a balanced design, so there are 10 subjects
+in each cell. Check the structure of the data set (hint: use `tab()`)
 
 <details><summary>See solution</summary>
 ```{r}
@@ -169,7 +169,7 @@ table(dat$light, dat$group)
 ```
 </details>
 
-2. Add column "growth" to "dat" with response times drawn from a gamma distribution (use `set.seed(999)`, and set `shape = 1` in the function for generating the data)
+2. Add column `growth` to `dat` with response times drawn from a gamma distribution (use `set.seed(999)`, and set `shape = 1` in the function for generating the data)
 
 <details><summary>See solution</summary>
 ```{r}
@@ -178,7 +178,7 @@ dat$growth = rgamma(60, shape=1)
 ```
 </details>
 
-3. Order the data frame by decreasing response times: 
+3. Order the data frame by decreasing `growth`: 
 
 <details><summary>See solution</summary>
 ```{r}
@@ -188,7 +188,7 @@ dat = dat[order(dat$growth, decreasing = T), ]
 </details>
 
 
-4. Compute the mean and standard deviation of `tr` considering `light * group`. Save the results in two objects (mean_growth and sd_growth)
+4. Compute the mean and standard deviation of `growth` considering `light * group`. Save the results in two objects (`mean_growth` and `sd_growth`)
 
 <details><summary>See solution</summary>
 ```{r}
@@ -197,7 +197,7 @@ sd_growth = aggregate(growth ~ light * group, data = dat, sd)
 ```
 </details>
 
-5. Rename the last column of mean_growth and sd_growth in "m_growth" and "sd_growth", respectively, **without using manual indexing** (e.g., `colnames(mean_growth)[3]`)>  
+5. Rename the last column of `mean_growth` and `sd_growth` in `m_growth` and `sd_growth`, respectively, **without using manual indexing** (e.g., `colnames(mean_growth)[3]`)>  
 
 <details><summary>See solution</summary>
 ```{r}
@@ -210,7 +210,7 @@ names(sd_growth)[colnames(sd_growth) == "growth"] ="sd_growth"
 ```
 </details>
 
-6. Merge mean_growth and `sd_growth` in `summary_dat` and order it by group: 
+6. Merge `mean_growth` and `sd_growth` in `summary_dat` and order it by group: 
 
 <details><summary>See solution</summary>
 ```{r}
@@ -227,7 +227,7 @@ summary_dat
 
 ### Base plots
 
-1. Pairwise plot of dat: 
+1. Pairwise plot of `dat`: 
 
 <details><summary>See solution</summary>
 ```{r}
@@ -235,7 +235,7 @@ plot(dat)
 ```
 </details>
 
-2. Plot growth according to group
+2. Plot `growth` according to `group`
 
 <details><summary>See solution</summary>
 ```{r}
@@ -244,7 +244,7 @@ plot(dat$growth ~ dat$group)
 ```
 </details>
 
-3. Plot growth according to light
+3. Plot `growth` according to `light`
 
 <details><summary>See solution</summary>
 ```{r}
@@ -255,7 +255,7 @@ plot(dat$growth ~ dat$light)
 
 ### ggplot
 
-1. Violin plot of growth according to light (hint: use `geom_violin(trim=F)`: 
+1. Violin plot of `growth` according to light (hint: use `geom_violin(trim=F)`: 
 
 <details><summary>See solution</summary>
 ```{r}
@@ -266,7 +266,7 @@ ggplot(dat, aes(x = light, y=growth)) + geom_violin(trim = F)
 ```
 </details>
 
-2. Violin plot of growth according to light and group: 
+2. Violin plot of `growth` according to `light` and `group`: 
 
 <details><summary>See solution</summary>
 ```{r}
@@ -295,7 +295,7 @@ Go wild with the plot options! Play with them `r emoji("smiley")`
   
 (hint: use the `quantile()` function)
 
-The solution can be obtained with 2 different codes. Do them both
+The solution can be obtained with 2 different codes. Write them both.
 
 <details><summary>See solution A</summary>
 ```{r}
@@ -342,7 +342,7 @@ data = data.frame(id = paste0("s", 1:100),
                   rt = rgamma(100, shape=3))
 ```
 
-Write the code for transforming all the columns identified as characters in factors. 
+Write the code for transforming all the columns identified as `characters` in factors. 
 Two solutions are possible, write them both. 
 
 
@@ -375,21 +375,23 @@ for (i in 1:ncol(data)) {
 
 ## Functions
 
-3. Write a function `my_mean()` to compute the mean of a vector without using the `mean()` function (use the `mean()` function just to check whether you did it right)
+3. Write the function `my_mean()` to compute the mean of a vector without using the `mean()` function (use the `mean()` function just to check whether you did it right)
 
 <details><summary>See solution</summary>
 ```{r}
-
+set.seed(999)
 my_mean = function(data) {
   m = sum(data)/length(data)
   return(m)
 }
 
+vec = rnorm(10)
+my_mean(vec) == mean(vec)
 
 ```
 </details>
 
-4. Add a check step: If it is not an integer or a numeric vector, throws an error "STOP! I need integer or numeric vectors!"
+4. Add a check step: If it is not an integer or a numeric vector, throws the error "STOP! I need integer or numeric vectors!"
 
 <details><summary>See solution</summary>
 ```{r}
@@ -402,12 +404,20 @@ my_mean = function(data) {
   }
     return(m)
 }
+# Use this cose to check
+# vec = letters[1:10]
+# my_mean(vec)
+# 
+# my_mean(as.factor(vec))
+# 
+# my_mean(as.logical(vec))
+
 
 ```
 
 </details>
 
-5. Define a print method `print.mean()` for `my_mean()` that says "The mean of your vector is:"
+5. Define the print method `print.mean()` for `my_mean()` that says "The mean of your vector is:"
 
 <details><summary>See solution</summary>
 ```{r}
@@ -419,7 +429,7 @@ print.mean = function(object) {
 ```
 </details>
 
-6. `print.mean()` only print objects of class "my.mean", otherwise it throws the error "Sorry, I print only objects of class my.mean"
+6. `print.mean()` only print objects of class `my.mean`, otherwise it throws the error "Sorry, I print only objects of class my.mean"
 
 <details><summary>See solution</summary>
 ```{r}
@@ -441,6 +451,15 @@ print.mean = function(object) {
   invisible(object)
   }
 }
+# Use this code to check
+# vec = rnorm(10)
+# classic_m = mean(vec)
+# 
+# print.mean(classic_m)
+# 
+# my_m = my_mean(vec)
+# print.mean(my_m)
+
 ```
 </details>
 
@@ -457,6 +476,8 @@ my_factorial = function(number) {
 return(fact)
 }
 
+my_factorial(5) == factorial(5)
+
 ```
 </details>
 
@@ -470,6 +491,9 @@ my_factorial = function(number) {
   }
   return(fact)
 }
+
+my_factorial(5) == factorial(5)
+
 ```
 </details>
 
