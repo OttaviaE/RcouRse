@@ -20,8 +20,9 @@ This course aims at giving a brief yet comprehensive introduction to the use of 
 
 ### Practice
 
-- [Basic `R` exercises](Exercises/esercizi.html)
-- Want more? Check this out [https://www.r-exercises.com/](https://www.r-exercises.com/)
+[Basic `R` and shin exercises](Exercises/esercizi.html)
+
+Want more? Check this out [https://www.r-exercises.com/](https://www.r-exercises.com/)
 
 ## Further readings
 
