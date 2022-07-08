@@ -9,6 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Ottavia M. Epifania" />
 
 
 <title>Esercizi</title>
@@ -1496,6 +1497,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore">Esercizi</h1>
+<h4 class="author">Ottavia M. Epifania</h4>
 
 </div>
 
@@ -1601,7 +1603,7 @@ See solution
 <pre class="r"><code>v = rep(c(&quot;on&quot;, &quot;off&quot;), c(5, 2))</code></pre>
 </details>
 <ol start="5" style="list-style-type: decimal">
-<li>Create this vector C1, A, C2, A2, A1, B1, B2, D 2, B, D 1</li>
+<li>Create this vector C2, A2, C1, B, D 2, D 1, B2, A1, A, B1</li>
 </ol>
 <details>
 <summary>
@@ -2070,7 +2072,7 @@ See solution
   
   fluidRow(column(4, 
                  actionButton(&quot;go&quot;, &quot;Show my choice!&quot; ) ), 
-           column(4, 
+           column(6, 
                    verbatimTextOutput(&quot;choice&quot;) ))
 
 )
@@ -2079,9 +2081,9 @@ server = function(input, output) {
   
   choice &lt;- eventReactive(input$go, {
     if (input$the_choice == 5) {
-       cat(&quot;You choose:&quot;, input$my_show )
+       cat(&quot;My favorite show is:&quot;, input$my_show )
     } else {
-       cat(&quot;You choose:&quot;, input$the_choice )
+       cat(&quot;My favorite show is:&quot;, input$the_choice )
     }
   })
 
@@ -2091,6 +2093,48 @@ server = function(input, output) {
 }
 
 shinyApp(ui, server)</code></pre>
+</details>
+<ol start="4" style="list-style-type: decimal">
+<li>Create a shiny app to display the head of the data set chose by the users (stick with radio buttons) (you can use the data sets I used in my slides). The head can be seen only after an action button is clicked</li>
+</ol>
+<details>
+<summary>
+See solution
+</summary>
+<pre class="r"><code>ui = fluidPage( 
+        radioButtons(inputId = &quot;dataset&quot;,
+                    label = &quot;Choose a dataset:&quot;,
+                    choices = list(&quot;rock&quot; = 1, 
+                                   &quot;pressure&quot; = 2, 
+                                   &quot;cars&quot; = 3)), 
+        fluidRow(column(4, 
+                      actionButton(&quot;go&quot;, &quot;Select dataset&quot;)), 
+                 column(6, 
+                   tableOutput(&quot;summary&quot;) ))
+       
+           )
+        
+server = function(input, output){        
+    dataInput = eventReactive(input$go, { # here&#39;s the action for the button
+      if(input$dataset == 1){ # call the input and its options with their label
+        data &lt;- rock
+      } else if (input$dataset == 2 ){
+        data &lt;- pressure
+      } else if (input$dataset == 3) {
+        data &lt;- cars
+      } 
+      
+    } 
+    )
+    
+    output$summary &lt;- renderTable({
+      data = dataInput()
+      head(data)
+    })
+}
+
+shinyApp(ui, server)</code></pre>
+<p><code>renderDataTable()</code> combined with <code>renderDataTable()</code> would have been fine as well</p>
 </details>
 </div>
 

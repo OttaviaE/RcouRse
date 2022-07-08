@@ -1,5 +1,6 @@
 ---
 title: "Esercizi"
+author: "Ottavia M. Epifania"
 output: 
     bookdown::html_document2:
         toc: true
@@ -577,7 +578,7 @@ ui = fluidPage(
   
   fluidRow(column(4, 
                  actionButton("go", "Show my choice!" ) ), 
-           column(4, 
+           column(6, 
                    verbatimTextOutput("choice") ))
 
 )
@@ -586,9 +587,9 @@ server = function(input, output) {
   
   choice <- eventReactive(input$go, {
     if (input$the_choice == 5) {
-       cat("You choose:", input$my_show )
+       cat("My favorite show is:", input$my_show )
     } else {
-       cat("You choose:", input$the_choice )
+       cat("My favorite show is:", input$the_choice )
     }
   })
 
@@ -601,4 +602,202 @@ shinyApp(ui, server)
   
 ```
 </details>
+
+4. Create a shiny app to display the head of the data set chose by the users (stick with radio buttons) (you can use the data sets I used in my slides, but use `mtcars` instead of `cars`). The head can be seen only after an action button is clicked
+
+<details><summary>See solution</summary>
+```{r eval=FALSE}
+
+ui = fluidPage( 
+        radioButtons(inputId = "dataset",
+                    label = "Choose a dataset:",
+                    choices = list("rock" = 1, 
+                                   "pressure" = 2, 
+                                   "mtcars" = 3)), 
+        fluidRow(column(4, 
+                      actionButton("go", "Select dataset")), 
+                 column(6, 
+                   tableOutput("summary") ))
+       
+           )
+        
+server = function(input, output){        
+    dataInput = eventReactive(input$go, { # here's the action for the button
+      if(input$dataset == 1){ # call the input and its options with their label
+        data <- rock
+      } else if (input$dataset == 2 ){
+        data <- pressure
+      } else if (input$dataset == 3) {
+        data <- mtcars
+      } 
+      
+    } 
+    )
+    
+    output$summary <- renderTable({
+      data = dataInput()
+      head(data)
+    })
+}
+
+shinyApp(ui, server)
+  
+
+  
+```
+`renderDataTable()` combined with `renderDataTable()` would have been fine as well
+
+</details>
+
+5. Use solution 2 for the action button and the data set selection (make sure to write a waiting message) and add a plot (hint: use `sidebarLayout()`). This time use `renderDataTable()`
+
+<details><summary>See solution</summary>
+```{r eval=FALSE}
+
+
+ui = fluidPage(
+   sidebarLayout(
+    sidebarPanel(
+      selectInput(inputId = "dataset",
+                  label = "Choose a dataset:",
+                  choices = list("rock" = 1, 
+                                   "pressure" = 2,
+                                   "mtcars" = 3)),
+
+      actionButton("go", "Upload data")
+      ),
+    mainPanel(
+      fluidRow(column(6, 
+                    plotOutput(
+        "graph"
+      )  ), 
+      column(4, 
+            dataTableOutput(
+        "summary"
+      ) )
+      )
+      
+    ) 
+  )
+)
+
+server = function(input, output){
+ values <- reactiveValues()
+  dataInput <- reactive({
+    if(input$dataset == 1){
+      data <- rock
+    } else if (input$dataset == 2 ){
+      data <- pressure
+    } else if (input$dataset == 3) {
+      data <- mtcars
+    }
+  })
+  observeEvent(input$go, { # Use the observeEvent function to make the UI and 
+    values$data <- data.frame(dataInput()) # server communicate again
+  })
+
+  output$graph <- renderPlot({
+    plot(values$data[, c(1:2)])
+  })
+
+  output$summary <- renderDataTable({
+    values$data
+  })
+}
+
+shinyApp(ui, server)
+  
+
+  
+```
+</details>
+
+6. Add the code to select two columns to be plotted and displayed: 
+
+<details><summary>See solution</summary>
+```{r eval=FALSE}
+ui = fluidPage(
+   sidebarLayout(
+    sidebarPanel(
+      selectInput(inputId = "dataset",
+                  label = "Choose a dataset:",
+                  choices = list("rock" = 1, 
+                                   "pressure" = 2,
+                                   "mtcars" = 3)),
+
+      actionButton("go", "Upload data"), 
+          conditionalPanel(                    
+        condition = "input.go >= '1'",   
+        uiOutput("var1"),    
+        uiOutput("var2"), 
+        actionButton("select", "Select & Display")
+      )
+      ),
+  mainPanel(
+      fluidRow(column(6, 
+                    plotOutput(
+        "graph"
+      )  ), 
+      column(4, 
+            dataTableOutput(
+        "summary"
+      ) )
+      )
+      
+    ) 
+  )
+)
+
+server = function(input, output){
+ values <- reactiveValues()
+  dataInput <- reactive({
+    if(input$dataset == 1){
+      data <- rock
+    } else if (input$dataset == 2 ){
+      data <- pressure
+    } else if (input$dataset == 3) {
+      data <- mtcars
+    }
+  })
+  observeEvent(input$go, { 
+    values$data <- data.frame(dataInput())
+  })
+
+  output$var1 <- renderUI({    
+    nam <- colnames(values$data) 
+    selectInput("var1", label = "Select x:",
+                choices = c(nam), multiple = FALSE,
+                selected = nam[1])
+  })
+  
+    output$var2 <- renderUI({    
+    nam <- colnames(values$data) 
+    selectInput("var2", label = "Select y:",
+                choices = c(nam), multiple = FALSE,
+                selected = nam[2])
+  })
+  newdata <- observeEvent(input$select, 
+                          { 
+                            values$newdata <- values$data[c(input$var1, input$var2)]
+                          })
+  
+  output$graph <- renderPlot({
+    plot(values$newdata)
+  })
+
+  output$summary <- renderDataTable({
+    values$newdata
+  })
+}
+
+shinyApp(ui, server)
+  
+
+  
+```
+</details>
+
+
+
+
 
