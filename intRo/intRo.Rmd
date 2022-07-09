@@ -1,6 +1,6 @@
 ---
 title: "An int`R`oduction to `R`"
-date: 'Erasmus+ QHelp seminar, Padova, July 2022'
+date: 'Erasmus+ QHelp seminar, Padova, 10\textsuperscript{th} July 2022'
 author: "Ottavia M. Epifania"
 institute: "Univerisity of Padova (IT)"
 output: 
@@ -29,7 +29,7 @@ header-includes:
     - \setbeamertemplate{frametitle}[default][center]
     - \AtBeginSection{\frame{\sectionpage}}
     - \setbeamercolor{section name}{fg=white}
-    - \setbeamercolor{title}{fg=template}
+    - \setbeamercolor{title}{fg=template, bg=template}
     - \setbeamercolor{section title}{fg=template}
     - \setbeamercolor{frame subtitle}{fg=template}
     - \setbeamercolor{title}{fg=template}
@@ -159,7 +159,7 @@ Again, `R` is case sensitive
 
 ## 
 
- `R` is open source and it used world wide $\rightarrow$ there's a huge community ready to help you
+ `R` community is the best feature of `R`
 
 Just copy \& paste any error message or warning in Google or ask Google "how to **[something]** in r"
 
@@ -848,9 +848,9 @@ Be ready to make mistakes (a lot of mistakes)
 
 Coding is ~~hard~~ art
 
-Think like a computer would think $\rightarrow$ not one gigantic problem but a series of small problems leading to a big solution
+Eyes on the prize, but take your time (and the necessary steps) to get there 
 
-Remember: You're not alone `stackoverflow` (or Google in general) is your best friend
+Remember: You're not alone $\rightarrow$ `stackoverflow` (or Google in general) is your best friend
 
 
 ## `ifelse()`
@@ -865,6 +865,7 @@ ifelse(weight > 7, "big boy", "small boy")
 \begin{exampleblock}{Pros}
 
 - Super easy to use
+
 - Can embed multiple \texttt{ifelse()} cycles
 \end{exampleblock}
 
@@ -977,7 +978,7 @@ Compute Cohen's *d*:
 ```{r tidy = FALSE}
 dcohen = function(group1, group2) { # Arguments
   mean_1 = mean(group1) ; mean_2 = mean(group2)
-  var_1 = var(group1) ; var_2 = mean(group2) # body
+  var_1 = var(group1) ; var_2 = var(group2) # body
   d = (mean_1 - mean_2)/sqrt(((var_1 + var_2)/2) )
   return(d) # results
 }
@@ -1072,7 +1073,7 @@ dcohen = function(group1, group2) { # Arguments
 ```{r echo = FALSE}
 dcohen = function(group1, group2) { # Arguments
   mean_1 = mean(group1) ; mean_2 = mean(group2)
-  var_1 = var(group1) ; var_2 = mean(group2) # body
+  var_1 = var(group1) ; var_2 = var(group2) # body
   d = (mean_1 - mean_2)/sqrt(((var_1 + var_2)/2) )
   dvalue = list(d = d)
   class(dvalue) = "cohend"
@@ -1245,8 +1246,7 @@ abline(h=.6, v=.6, lty=2) # horiz. and vert. lines
 for(side in 1:4) mtext(-1:4, side=side, at=.7, line=-1:4)
 mtext(paste("Side", 1:4), side=1:4, line=-1, font=2)
 ```
-## Rome wasn't built in a day 
-### and neither your graph
+## Rome wasn't built in a day  \small and neither your graph
 
 Display the interaction between the two factors of a two-factorial experiment: 
 
@@ -1468,8 +1468,7 @@ ggplot(states,
 use `grid.arrange()` function from the `gridExtra` package: 
 
 ```{r eval = FALSE}
-install.packages("grideExtra") 
-library(gridExtra)
+install.packages("grideExtra") ; library(gridExtra)
 ```
 
 
@@ -1822,6 +1821,17 @@ quasi              logit, probit, cloglog, identity, inverse,
 # Simulations
 
 ## Random numbers generation
+
+Use a random monster:
+
+\vspace{5mm}
+ 
+```{r echo=FALSE, out.width="80%"}
+knitr::include_graphics("img/random.png")
+```
+
+## but its better with `R`
+
 \small
 Random numbers drawn from a statistical distribution $\rightarrow$ the distribution name (see `??Distributions` for an exhaustive list of distribution) prefixed by `r` (random)
 
