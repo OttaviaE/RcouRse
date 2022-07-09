@@ -25,22 +25,22 @@ library(shinyjs)
 </style>
 
 
-<!-- ```{css echo=FALSE} -->
-<!-- pre { -->
-<!--   max-height: 700px; -->
-<!--   overflow-y: auto; -->
-<!-- } -->
+```{css echo=FALSE}
+pre {
+  max-height: 700px;
+  overflow-y: auto;
+}
 
-<!-- pre[class] { -->
-<!--   max-height: 500px; -->
-<!-- } -->
+pre[class] {
+  max-height: 500px;
+}
 
-<!-- .scroll-100 { -->
-<!--   max-height: 500px; -->
-<!--   overflow-y: auto; -->
-<!--   background-color: inherit; -->
-<!-- } -->
-<!-- ``` -->
+.scroll-100 {
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+```
 
 
 
