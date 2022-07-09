@@ -8,7 +8,7 @@ output:
     theme: metropolis
     colortheme: beaver
     fonttheme: serif
-    highlight: haddock
+    highlight: monochrome
 header-includes:
     - \usepackage{graphicx} 
     - \usepackage{setspace}
