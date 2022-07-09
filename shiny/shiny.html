@@ -3217,22 +3217,33 @@ slide:not(.current) .plotly.html-widget{
 
 </style>
 
-<style type="text/css">
-pre {
-  max-height: 700px;
-  overflow-y: auto;
-}
+<!-- ```{css echo=FALSE} -->
 
-pre[class] {
-  max-height: 500px;
-}
+<!-- pre { -->
 
-.scroll-100 {
-  max-height: 500px;
-  overflow-y: auto;
-  background-color: inherit;
-}
-</style>
+<!--   max-height: 700px; -->
+
+<!--   overflow-y: auto; -->
+
+<!-- } -->
+
+<!-- pre[class] { -->
+
+<!--   max-height: 500px; -->
+
+<!-- } -->
+
+<!-- .scroll-100 { -->
+
+<!--   max-height: 500px; -->
+
+<!--   overflow-y: auto; -->
+
+<!--   background-color: inherit; -->
+
+<!-- } -->
+
+<!-- ``` -->
 
 <slide class=""><hgroup><h2>Shiny app logic I</h2></hgroup><article  id="shiny-app-logic-i" class="build">
 
@@ -3669,7 +3680,7 @@ server = function(input, output){
     sidebarPanel(
       selectInput(inputId = &quot;dataset&quot;,
                   label = &quot;Choose a dataset:&quot;,
-                  choices = list(&quot;rock&quot; = 1, # we add numbers to the data set labels
+                  choices = list(&quot;rock&quot; = 1, 
                                  &quot;pressure&quot; = 2,
                                  &quot;cars&quot; = 3,
                                  &quot;I want to use my data!!&quot; =4)), # we add an option
