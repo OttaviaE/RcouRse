@@ -45,11 +45,11 @@ exp(5-4)/(1+exp(5-4))
 
 </details>
 
-4. $log(\frac{0.7}{1-0.5})* \sqrt{(\frac{20\times 3}{2})^5}$ [8.839466]
+4. $log(\frac{0.7}{1-0.5})* \sqrt{(\frac{20\times 3}{2})^5}$ [1658.641]
 
 <details><summary>See solution</summary>
 ```{r}
-log(0.7/(1-0.5) * sqrt(((20 *3)/2)^5))
+log(0.7/(1-0.5)) * sqrt(((20 *3)/2)^5)
 ```
 
 </details>
