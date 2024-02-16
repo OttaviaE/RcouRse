@@ -2,7 +2,7 @@
 title: "Shine bright like an open source app"
 subtitle: "An introduction to shiny"
 author: "Ottavia Epifania"
-#runtime: shiny
+runtime: shiny
 output:  
 #    slidy_presentation:
     ioslides_presentation: 
